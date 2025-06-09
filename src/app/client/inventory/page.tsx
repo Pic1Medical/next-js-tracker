@@ -284,6 +284,7 @@ function StockItem({
         </div>
       </td>
       <td>{product.name}</td>
+      <td>{product.partNo}</td>
       <td>{location.name}</td>
       <td>{stock.qty}</td>
     </tr>
@@ -319,6 +320,7 @@ function Table({
               </button>
             </th>
             <th>Name</th>
+            <th>Part #</th>
             <th>Location</th>
             <th>Quantity</th>
           </tr>

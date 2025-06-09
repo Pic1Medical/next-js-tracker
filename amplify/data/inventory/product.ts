@@ -8,6 +8,7 @@ export const Product = a
     stock: a.hasMany("Stock", "productId"),
 
     name: a.string().required(),
+    partNo: a.string(),
     desc: a.string(),
   })
   .authorization((allow) => [allow.authenticated()]);

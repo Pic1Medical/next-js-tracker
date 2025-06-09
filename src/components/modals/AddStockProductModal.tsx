@@ -13,6 +13,7 @@ export default function AddStockProductModal({ id }: { id: string }) {
   const nameState = useState("");
   const qtyState = useState(0);
   const descState = useState("");
+  const partNoState = useState("");
   const categoryState = useState("");
   const locationState = useState("");
   const onSubmit = async () => {
@@ -34,6 +35,7 @@ export default function AddStockProductModal({ id }: { id: string }) {
         categoryId: categoryState[0],
         name: nameState[0],
         desc: descState[0].length ? descState[0] : undefined,
+        partNo: partNoState[0].length ? partNoState[0] : undefined,
       });
       if (result.errors || !result.data) {
         console.log(result);
@@ -157,7 +159,7 @@ export default function AddStockProductModal({ id }: { id: string }) {
               </label>
               <textarea
                 className="form-control"
-                rows={3}
+                rows={4}
                 maxLength={512}
                 style={{ resize: "none" }}
                 {...ApplyState(descState)}
@@ -165,6 +167,23 @@ export default function AddStockProductModal({ id }: { id: string }) {
             </div>
           </div>
           <div className="col-sm mb-2">
+            <div className="form-group mb-1">
+              <label
+                htmlFor={`${id}-field-partno`}
+                className="form-label required"
+              >
+                Category
+              </label>
+              <input
+                id={`${id}-field-partno`}
+                type="text"
+                autoComplete="off"
+                className="form-control"
+                required
+                maxLength={128}
+                {...ApplyState(partNoState)}
+              />
+            </div>
             <div className="form-group">
               <label
                 htmlFor={`${id}-field-category`}
