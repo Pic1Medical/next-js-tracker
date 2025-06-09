@@ -6,10 +6,11 @@ Amplify.configure(outputs);
 
 // Import Bootstrap Styles + AWS Amplify Styles.
 // import "bootstrap/dist/css/bootstrap.min.css"; <- custom theme applied in style.scss (import not needed).
-import "bootstrap/dist/js/bootstrap.min.js";
+//import "bootstrap/dist/js/bootstrap.min.js"; NEXT.JS hates this import for some reason, AWS Amplify won't accept it if NEXT.JS doesn't.
 import "bootstrap-icons/font/bootstrap-icons.min.css";
 import "@aws-amplify/ui-react/styles.css";
 import "./style.scss";
+import Script from "next/script";
 
 // Export our "root" layout to begin our website.
 export default function RootLayout({
@@ -19,7 +20,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        {children}
+        <Script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" />
+      </body>
     </html>
   );
 }
