@@ -1,3 +1,5 @@
+import { FormEvent } from "react";
+
 export const ApplyState = <T extends HTMLElement>(
   state: [string, (s: string) => void]
 ) => {
