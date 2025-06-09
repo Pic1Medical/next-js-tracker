@@ -8,6 +8,6 @@ export const Stock = a
     locationId: a.id(),
     location: a.belongsTo("Location", "locationId"),
 
-    qty: a.integer(),
+    qty: a.integer().required(),
   })
   .authorization((allow) => [allow.authenticated()]);

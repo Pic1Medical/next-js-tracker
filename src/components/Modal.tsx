@@ -1,14 +1,22 @@
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useRef, useState } from "react";
 
 interface Props {
   id: string;
   title: string;
+  autoDismiss?: boolean;
   onSubmit: () => Promise<void>;
   onReset?: () => void;
   children: React.ReactNode;
 }
 
-export default function Modal({ id, title, children, ...props }: Props) {
+export default function Modal({
+  id,
+  title,
+  autoDismiss,
+  children,
+  ...props
+}: Props) {
+  const closeBtn = useRef<HTMLButtonElement>(null);
   const [busy, setBusy] = useState(false);
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -16,7 +24,15 @@ export default function Modal({ id, title, children, ...props }: Props) {
     props
       .onSubmit()
       .catch(console.error)
-      .finally(() => setBusy(false));
+      .finally(() => {
+        setBusy(false);
+        if (autoDismiss) {
+          if (closeBtn.current) {
+            closeBtn.current.click();
+          }
+          (e.target as HTMLFormElement).reset();
+        }
+      });
   };
 
   const onReset = (e: FormEvent<HTMLFormElement>) => {
@@ -41,6 +57,7 @@ export default function Modal({ id, title, children, ...props }: Props) {
               <div className="modal-header">
                 <h5 className="modal-title">{title}</h5>
                 <button
+                  ref={closeBtn}
                   type="button"
                   className="btn-close"
                   data-bs-dismiss="modal"

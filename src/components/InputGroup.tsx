@@ -12,6 +12,7 @@ export default function InputGroup({
   id,
   state,
   label: _labelText,
+  ...props
 }: {
   id: string;
   label: string;
@@ -21,7 +22,7 @@ export default function InputGroup({
     Label: (props: LabelHTMLAttributes<HTMLLabelElement>) => React.ReactNode;
     Input: (props: InputHTMLAttributes<HTMLInputElement>) => React.ReactNode;
   };
-}) {
+} & Omit<InputHTMLAttributes<HTMLInputElement>, "list">) {
   const HasChildren = typeof children === "object";
   const Label = (HasChildren ? children.Label : undefined) ?? "label";
   const Input = (HasChildren ? children.Input : undefined) ?? "input";
@@ -39,11 +40,16 @@ export default function InputGroup({
         <datalist id={`${id}-datalist`}>
           {list.map((v) => {
             if (typeof v === "string") return <option value={v}>{v}</option>;
-            return <option value={v[1]}>{v[0]}</option>;
+            return (
+              <option key={v[1]} value={v[0]}>
+                {v[1]}
+              </option>
+            );
           })}
         </datalist>
       )}
       <Input
+        {...props}
         id={id}
         className="form-control"
         list={list ? `${id}-datalist` : ""}

@@ -85,6 +85,7 @@ $primary: #085194;
   border: none !important;
 }
 
+.btn-group-xs > .btn,
 .btn-xs {
   @include button-size(0.125rem, 0.35rem, 0.8rem, $border-radius-sm);
 }
