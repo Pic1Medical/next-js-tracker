@@ -63,6 +63,7 @@ export default function Header({
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <NavLink to="/client">Dashboard</NavLink>
               <NavLink to="/client/inventory">Inventory</NavLink>
+              <NavLink to="/client/service">Service</NavLink>
             </ul>
             <div className="text-light d-flex flex-nowrap align-items-center gap-3">
               <span>{user?.signInDetails?.loginId ?? "Unknown User"}</span>
