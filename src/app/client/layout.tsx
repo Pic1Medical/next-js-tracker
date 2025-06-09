@@ -1,7 +1,8 @@
 "use client";
-import { Authenticator, type UseAuthenticator } from "@aws-amplify/ui-react";
+import { type UseAuthenticator } from "@aws-amplify/ui-react";
 import React from "react";
-import Header from "@/src/components/Header";
+import Header from "@components/Header";
+import Authenticator from "@components/Authenticator";
 
 function ClientLayoutImpl(
   { children }: { children: React.ReactNode },

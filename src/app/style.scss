@@ -7,7 +7,6 @@ body {
   display: flex;
   flex-wrap: nowrap;
   flex-direction: column;
-  align-items: center;
 }
 
 body:has(> div) {
@@ -15,11 +14,14 @@ body:has(> div) {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  align-items: center;
   justify-content: center;
 }
 
-.amplify-tabs [id$="signUp"] {
+.amplify-tabs [id$="signUp"] button {
   display: none;
+  user-select: none;
+  pointer-events: none;
 }
 
 body > header {
@@ -62,3 +64,27 @@ body > main {
 $primary: #085194;
 
 @import "node_modules/bootstrap/scss/bootstrap";
+
+.table-rounded > :first-child > tr:first-child > :first-child {
+  border-top-left-radius: var(--bs-border-radius);
+}
+
+.table-rounded > :first-child > tr:first-child > :last-child {
+  border-top-right-radius: var(--bs-border-radius);
+}
+
+.table-rounded > :last-child > tr:last-child > :first-child {
+  border-bottom-left-radius: var(--bs-border-radius);
+}
+
+.table-rounded > :last-child > tr:last-child > :last-child {
+  border-bottom-right-radius: var(--bs-border-radius);
+}
+
+.table-rounded > :last-child > tr > * {
+  border: none !important;
+}
+
+.btn-xs {
+  @include button-size(0.125rem, 0.35rem, 0.8rem, $border-radius-sm);
+}

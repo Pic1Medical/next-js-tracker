@@ -19,15 +19,16 @@ export default function Header({
     to: string;
     children: React.ReactNode;
   }) {
+    const active = pathname === to;
     return (
       <li className="nav-item">
         <a
-          className="nav-link active"
-          aria-current={pathname === to ? "page" : undefined}
-          aria-disabled={pathname === to}
+          className={`nav-link ${active ? "active disabled" : ""}`}
+          aria-disabled={active}
           href={to}
         >
           {children}
+          <i className="bi bi-link-45deg"></i>
         </a>
       </li>
     );
