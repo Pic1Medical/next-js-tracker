@@ -9,7 +9,7 @@ body {
   flex-direction: column;
 }
 
-body:has(> div) {
+body:has(> div):not(:has(> main)) {
   background-image: url("../assets/pic1medical-hero.png");
   background-position: center;
   background-repeat: no-repeat;
@@ -87,4 +87,10 @@ $primary: #085194;
 
 .btn-xs {
   @include button-size(0.125rem, 0.35rem, 0.8rem, $border-radius-sm);
+}
+
+.form-label.required::after {
+  content: "*";
+  margin-left: 0.125rem;
+  color: var(--bs-danger);
 }

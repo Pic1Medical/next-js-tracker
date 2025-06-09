@@ -1,33 +1,38 @@
+"use client";
+import {
+  FormEvent,
+  FormEventHandler,
+  InputHTMLAttributes,
+  LabelHTMLAttributes,
+} from "react";
+
 export default function InputGroup({
   children,
   list,
   id,
+  state,
   label: _labelText,
 }: {
   id: string;
   label: string;
   list?: (string | [string, string])[];
-  children?:
-    | {
-        Label: (props: {
-          children: string;
-          for: string;
-          className: string;
-        }) => React.ReactNode;
-        Input: (props: {
-          id: string;
-          className: string;
-          list?: string;
-        }) => React.ReactNode;
-      }
-    | ((props: { id: string }) => Element);
+  state?: [getter: string, setter: ((v: string) => void) | undefined];
+  children?: {
+    Label: (props: LabelHTMLAttributes<HTMLLabelElement>) => React.ReactNode;
+    Input: (props: InputHTMLAttributes<HTMLInputElement>) => React.ReactNode;
+  };
 }) {
   const HasChildren = typeof children === "object";
   const Label = (HasChildren ? children.Label : undefined) ?? "label";
   const Input = (HasChildren ? children.Input : undefined) ?? "input";
+  const value = state ? state[0] : "";
+  const onInput = (e: FormEvent<HTMLInputElement>) => {
+    if (typeof state === "object" && typeof state[1] === "function")
+      state[1]((e.target as HTMLInputElement).value);
+  };
   return (
     <div className="input-group">
-      <Label for={id} className="input-group-text">
+      <Label htmlFor={id} className="input-group-text">
         {_labelText}
       </Label>
       {list && (
@@ -42,6 +47,9 @@ export default function InputGroup({
         id={id}
         className="form-control"
         list={list ? `${id}-datalist` : ""}
+        autoComplete="off"
+        value={value}
+        onChange={onInput}
       />
     </div>
   );

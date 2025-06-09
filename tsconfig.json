@@ -23,6 +23,7 @@
       "@src/*": ["./src/*"],
       "@app/*": ["./src/app/*"],
       "@assets/*": ["./src/assets/*"],
+      "@amplify/*": ["./amplify/*"],
       "@components/*": ["./src/components/*"]
     }
   },
