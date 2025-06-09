@@ -1,6 +1,6 @@
 import InputGroup from "@/src/components/InputGroup";
 
-export const Categories = ["test", "desc", "lamp"];
+const Categories = ["test", "desc", "lamp"];
 
 export default function InventoryPage() {
   return (
