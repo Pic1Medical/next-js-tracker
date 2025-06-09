@@ -21,7 +21,11 @@ export default function ServiceLayout({
 }) {
   return (
     <>
-      <ul className="nav nav-tabs" role="tablist">
+      <ul
+        className="nav nav-underline px-4 bg-light border-bottom"
+        style={{ position: "sticky", top: "0", left: "0", zIndex: 10000 }}
+        role="tablist"
+      >
         <Tab to="/client/service">
           <i className="bi bi-house-fill" aria-hidden>
             &nbsp;
@@ -41,7 +45,7 @@ export default function ServiceLayout({
           Checkout
         </Tab>
       </ul>
-      <section role="tabpanel" className="mx-4 my-2">
+      <section role="tabpanel" className="px-4 py-3">
         {children}
       </section>
     </>

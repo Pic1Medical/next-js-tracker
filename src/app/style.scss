@@ -2,8 +2,7 @@ body {
   width: 100vw;
   height: 100vh;
   padding: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
+  overflow: hidden;
   display: flex;
   flex-wrap: nowrap;
   flex-direction: column;
@@ -25,18 +24,17 @@ body:has(> div):not(:has(> main)) {
 }
 
 body > header {
-  position: sticky;
-  top: 0;
-  left: 0;
-  width: 100vw;
   background-color: var(--bs-primary);
 }
 
 body > main {
+  position: relative;
   flex-grow: 1;
   display: flex;
   flex-wrap: nowrap;
   flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 :has(> .hide-on-group-hover):hover > .hide-on-group-hover {

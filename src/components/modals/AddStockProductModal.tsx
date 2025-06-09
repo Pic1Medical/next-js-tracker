@@ -179,7 +179,6 @@ export default function AddStockProductModal({ id }: { id: string }) {
                 type="text"
                 autoComplete="off"
                 className="form-control"
-                required
                 maxLength={128}
                 {...ApplyState(partNoState)}
               />
