@@ -189,7 +189,7 @@ export default function AddStockProductModal({ id }: { id: string }) {
                 htmlFor={`${id}-field-category`}
                 className="form-label required"
               >
-                Category
+                Part #
               </label>
               <input
                 id={`${id}-field-category`}
