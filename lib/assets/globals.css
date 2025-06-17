@@ -1,0 +1,54 @@
+body {
+  width: 100vw;
+  height: 100vh;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+}
+
+body:has(> div):not(:has(> main)) {
+  background-image: url("~@assets/pic1medical-hero.png");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  align-items: center;
+  justify-content: center;
+}
+
+.amplify-tabs [id$="signUp"] button {
+  display: none;
+  user-select: none;
+  pointer-events: none;
+}
+
+body > header {
+  background-color: var(--bs-primary);
+}
+
+body > main {
+  position: relative;
+  flex-grow: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+}
+
+:has(> .hide-on-group-hover):hover > .hide-on-group-hover {
+  display: none;
+}
+
+:has(> .show-on-group-hover):hover > .show-on-group-hover {
+  display: initial;
+}
+
+.show-on-group-hover {
+  display: none;
+}
+
+::-ms-reveal {
+  display: none;
+}

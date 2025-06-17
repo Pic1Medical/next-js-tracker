@@ -7,28 +7,11 @@ import AddStockProductModal from "@/src/components/modals/AddStockProductModal";
 import AddLocationModal from "@/src/components/modals/AddLocationModal";
 import AddCategoryModal from "@/src/components/modals/AddCategoryModal";
 import EditStockModal from "@/src/components/modals/EditStockModal";
+import InputField from "@lib/ui/InputField";
 
 const client = generateClient<Schema>();
 
-function Form({
-  busy,
-  setBusy,
-  setStock,
-  setProduct,
-  shouldRefresh,
-  setRefresh,
-  showOutOfStock,
-  setShowOutOfStock,
-}: {
-  busy: boolean;
-  setBusy: (v: boolean) => void;
-  setStock: (v: Array<Schema["Stock"]["type"]>) => void;
-  setProduct: (v: Array<Schema["Product"]["type"]>) => void;
-  shouldRefresh: boolean;
-  setRefresh: (v: boolean) => void;
-  showOutOfStock: boolean;
-  setShowOutOfStock: (v: boolean) => void;
-}) {
+function Form({ busy, setBusy, setStock, setProduct, shouldRefresh, setRefresh, showOutOfStock, setShowOutOfStock }: { busy: boolean; setBusy: (v: boolean) => void; setStock: (v: Array<Schema["Stock"]["type"]>) => void; setProduct: (v: Array<Schema["Product"]["type"]>) => void; shouldRefresh: boolean; setRefresh: (v: boolean) => void; showOutOfStock: boolean; setShowOutOfStock: (v: boolean) => void }) {
   const [locations, setLocations] = useState<Array<[string, string]>>([]);
   const [categories, setCategories] = useState<Array<[string, string]>>([]);
   const [products, setProducts] = useState<Array<[string, string]>>([]);
@@ -42,10 +25,8 @@ function Form({
     setBusy(true);
     const filters: Record<string, unknown> = {};
     if (!showOutOfStock) {
-      if (locationState[0].length > 0)
-        filters["locationId"] = { eq: locationState[0] };
-      if (productState[0].length > 0)
-        filters["productId"] = { eq: productState[0] };
+      if (locationState[0].length > 0) filters["locationId"] = { eq: locationState[0] };
+      if (productState[0].length > 0) filters["productId"] = { eq: productState[0] };
       client.models.Stock.list({
         filter: filters,
       })
@@ -55,20 +36,14 @@ function Form({
             throw new Error("Failed to retrieve stock data.");
           }
           if (categoryState[0].length > 0) {
-            setStock(
-              await v.data.filter(
-                async (t) =>
-                  (await t.product()).data?.categoryId == categoryState[0]
-              )
-            );
+            setStock(await v.data.filter(async (t) => (await t.product()).data?.categoryId == categoryState[0]));
           } else setStock(v.data);
         })
         .catch(console.error)
         .finally(() => setBusy(false));
     } else {
       if (productState[0].length > 0) filters["id"] = { eq: productState[0] };
-      if (categoryState[0].length > 0)
-        filters["categoryId"] = { eq: categoryState[0] };
+      if (categoryState[0].length > 0) filters["categoryId"] = { eq: categoryState[0] };
       client.models.Product.list({
         filter: filters,
       })
@@ -92,17 +67,11 @@ function Form({
   }, [shouldRefresh]);
 
   useEffect(() => {
-    const sub1 = client.models.Location.observeQuery().subscribe((v) =>
-      setLocations(v.items.map((v) => [v.id, v.name]))
-    );
+    const sub1 = client.models.Location.observeQuery().subscribe((v) => setLocations(v.items.map((v) => [v.id, v.name])));
 
-    const sub2 = client.models.Category.observeQuery().subscribe((v) =>
-      setCategories(v.items.map((v) => [v.id, v.name]))
-    );
+    const sub2 = client.models.Category.observeQuery().subscribe((v) => setCategories(v.items.map((v) => [v.id, v.name])));
 
-    const sub3 = client.models.Product.observeQuery().subscribe((v) =>
-      setProducts(v.items.map((v) => [v.id, v.name]))
-    );
+    const sub3 = client.models.Product.observeQuery().subscribe((v) => setProducts(v.items.map((v) => [v.id, v.name])));
 
     return () => {
       sub1.unsubscribe();
@@ -112,41 +81,74 @@ function Form({
   }, []);
 
   return (
-    <form className="mx-2 my-1" onSubmit={onSubmit}>
-      <fieldset className="container-fluid" disabled={busy}>
+    <form
+      className="mx-2 my-1"
+      onSubmit={onSubmit}
+    >
+      <fieldset
+        className="container-fluid"
+        disabled={busy}
+      >
         <legend>Inventory Search</legend>
         <div className="row">
           <div className="col-md mb-2">
-            <InputGroup
+            {/* <InputGroup
               id="Category"
               label="Category"
               list={categories}
               state={categoryState}
+            /> */}
+            <InputField
+              id="Category"
+              label="Category"
+              type="combobox"
+              options={categories}
+              state={categoryState}
             />
           </div>
           <div className="col-md mb-2">
-            <InputGroup
+            {/* <InputGroup
               id="Locations"
               label="Locations"
               list={locations}
               state={locationState}
               disabled={showOutOfStock}
+            /> */}
+            <InputField
+              id="Locations"
+              label="Locations"
+              type="combobox"
+              options={locations}
+              state={locationState}
             />
           </div>
         </div>
         <div className="row">
           <div className="col-xl mb-2">
-            <InputGroup
+            {/* <InputGroup
               id="product-name"
               label="Product"
               list={products}
+              state={productState}
+            /> */}
+            <InputField
+              id="Product"
+              label="Product"
+              type="combobox"
+              options={products}
               state={productState}
             />
           </div>
           <div className="col-xl">
             <div className="btn-group w-100">
-              <button type="submit" className="btn btn-outline-primary">
-                <i className="bi bi-search" aria-hidden>
+              <button
+                type="submit"
+                className="btn btn-outline-primary"
+              >
+                <i
+                  className="bi bi-search"
+                  aria-hidden
+                >
                   &nbsp;
                 </i>
                 Search
@@ -157,7 +159,10 @@ function Form({
                 data-bs-toggle="modal"
                 data-bs-target="#add-stock-product-modal"
               >
-                <i className="bi bi-plus-square" aria-hidden>
+                <i
+                  className="bi bi-plus-square"
+                  aria-hidden
+                >
                   &nbsp;
                 </i>
                 Add&nbsp;Product
@@ -168,7 +173,10 @@ function Form({
                 data-bs-toggle="modal"
                 data-bs-target="#add-location-modal"
               >
-                <i className="bi bi-cloud-plus" aria-hidden>
+                <i
+                  className="bi bi-cloud-plus"
+                  aria-hidden
+                >
                   &nbsp;
                 </i>
                 Add&nbsp;Location
@@ -179,7 +187,10 @@ function Form({
                 data-bs-toggle="modal"
                 data-bs-target="#add-category-modal"
               >
-                <i className="bi bi-bookmark-plus" aria-hidden>
+                <i
+                  className="bi bi-bookmark-plus"
+                  aria-hidden
+                >
                   &nbsp;
                 </i>
                 Add&nbsp;Category
@@ -188,9 +199,7 @@ function Form({
                 className="btn btn-outline-primary"
                 onClick={() => setShowOutOfStock(!showOutOfStock)}
               >
-                <label htmlFor="show-out-of-stock-products pointer-events-none">
-                  Show OOS?
-                </label>
+                <label htmlFor="show-out-of-stock-products pointer-events-none">Show OOS?</label>
                 <input
                   id="show-out-of-stock-products"
                   className="form-check-input ms-2 pointer-events-none"
@@ -207,23 +216,9 @@ function Form({
   );
 }
 
-function StockItem({
-  stock,
-  refresh,
-  editStockId,
-  setEditStockId,
-}: {
-  stock: Schema["Stock"]["type"];
-  refresh: () => void;
-  editStockId: string | undefined;
-  setEditStockId: (id: string | undefined) => void;
-}) {
-  const [product, setProduct] = useState<Schema["Product"]["type"] | undefined>(
-    undefined
-  );
-  const [location, setLocation] = useState<
-    Schema["Location"]["type"] | undefined
-  >(undefined);
+function StockItem({ stock, refresh, editStockId, setEditStockId }: { stock: Schema["Stock"]["type"]; refresh: () => void; editStockId: string | undefined; setEditStockId: (id: string | undefined) => void }) {
+  const [product, setProduct] = useState<Schema["Product"]["type"] | undefined>(undefined);
+  const [location, setLocation] = useState<Schema["Location"]["type"] | undefined>(undefined);
   useEffect(() => {
     stock
       .product()
@@ -235,9 +230,7 @@ function StockItem({
       .catch(console.error);
   }, []);
   const onDelete = () => {
-    const confirmed = window.confirm(
-      "Are you sure you'd like to delete this item?"
-    );
+    const confirmed = window.confirm("Are you sure you'd like to delete this item?");
     if (!confirmed) return;
     client.models.Stock.delete({
       id: stock.id,
@@ -250,7 +243,10 @@ function StockItem({
   if (!product || !location)
     return (
       <tr key={stock.id}>
-        <td colSpan={4} className="placeholder"></td>
+        <td
+          colSpan={4}
+          className="placeholder"
+        ></td>
       </tr>
     );
   return (
@@ -291,19 +287,7 @@ function StockItem({
   );
 }
 
-function Table({
-  stock,
-  busy,
-  refresh,
-  editStockId,
-  setEditStockId,
-}: {
-  stock: Array<Schema["Stock"]["type"]>;
-  busy: boolean;
-  refresh: () => void;
-  editStockId: string | undefined;
-  setEditStockId: (id: string | undefined) => void;
-}) {
+function Table({ stock, busy, refresh, editStockId, setEditStockId }: { stock: Array<Schema["Stock"]["type"]>; busy: boolean; refresh: () => void; editStockId: string | undefined; setEditStockId: (id: string | undefined) => void }) {
   return (
     <>
       <table className="table table-rounded table-striped table-hover table-sm mx-2 my-1 w-auto">
@@ -346,7 +330,10 @@ function Table({
             <tr>
               <td colSpan={4}>
                 <div className="d-flex align-items-center justify-content-center">
-                  <div className="spinner-border" role="status">
+                  <div
+                    className="spinner-border"
+                    role="status"
+                  >
                     <div className="visually-hidden">Loading</div>
                   </div>
                 </div>
@@ -359,16 +346,8 @@ function Table({
   );
 }
 
-function ProductItem({
-  product,
-  refresh,
-}: {
-  product: Schema["Product"]["type"];
-  refresh: () => void;
-}) {
-  const [category, setCategory] = useState<
-    Schema["Category"]["type"] | undefined
-  >(undefined);
+function ProductItem({ product, refresh }: { product: Schema["Product"]["type"]; refresh: () => void }) {
+  const [category, setCategory] = useState<Schema["Category"]["type"] | undefined>(undefined);
   useEffect(() => {
     product
       .category()
@@ -376,9 +355,7 @@ function ProductItem({
       .catch(console.error);
   }, []);
   const onDelete = () => {
-    const confirmed = window.confirm(
-      "Are you sure you'd like to delete this item?"
-    );
+    const confirmed = window.confirm("Are you sure you'd like to delete this item?");
     if (!confirmed) return;
     client.models.Product.delete({
       id: product.id,
@@ -389,7 +366,10 @@ function ProductItem({
   if (!category)
     return (
       <tr key={product.id}>
-        <td colSpan={4} className="placeholder"></td>
+        <td
+          colSpan={4}
+          className="placeholder"
+        ></td>
       </tr>
     );
   return (
@@ -424,15 +404,7 @@ function ProductItem({
   );
 }
 
-function ProductTable({
-  product,
-  busy,
-  refresh,
-}: {
-  product: Array<Schema["Product"]["type"]>;
-  busy: boolean;
-  refresh: () => void;
-}) {
+function ProductTable({ product, busy, refresh }: { product: Array<Schema["Product"]["type"]>; busy: boolean; refresh: () => void }) {
   return (
     <table className="table table-rounded table-striped table-hover table-sm mx-2 my-1 w-auto">
       <thead className="table-primary">
@@ -454,7 +426,10 @@ function ProductTable({
       {!busy && (
         <tbody className="table-secondary">
           {product.map((s) => (
-            <ProductItem product={s} {...{ refresh }} />
+            <ProductItem
+              product={s}
+              {...{ refresh }}
+            />
           ))}
           {!product.length && (
             <tr>
@@ -468,7 +443,10 @@ function ProductTable({
           <tr>
             <td colSpan={4}>
               <div className="d-flex align-items-center justify-content-center">
-                <div className="spinner-border" role="status">
+                <div
+                  className="spinner-border"
+                  role="status"
+                >
                   <div className="visually-hidden">Loading</div>
                 </div>
               </div>
@@ -503,7 +481,7 @@ export default function InventoryPage() {
           setShowOutOfStock,
         }}
       />
-      {!showOutOfStock && (
+      {/* {!showOutOfStock && (
         <Table
           {...{
             stock,
@@ -526,10 +504,10 @@ export default function InventoryPage() {
             },
           }}
         />
-      )}
-      <AddLocationModal id="add-location-modal" />
+      )} */}
+      {/* <AddLocationModal id="add-location-modal" />
       <AddCategoryModal id="add-category-modal" />
-      <AddStockProductModal id="add-stock-product-modal" />
+      <AddStockProductModal id="add-stock-product-modal" /> */}
       {/* <EditStockModal id="edit-stock-modal" stockId={editStockId} /> */}
     </>
   );

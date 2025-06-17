@@ -168,10 +168,7 @@ export default function AddStockProductModal({ id }: { id: string }) {
           </div>
           <div className="col-sm mb-2">
             <div className="form-group mb-1">
-              <label
-                htmlFor={`${id}-field-partno`}
-                className="form-label required"
-              >
+              <label htmlFor={`${id}-field-partno`} className="form-label">
                 Part #
               </label>
               <input

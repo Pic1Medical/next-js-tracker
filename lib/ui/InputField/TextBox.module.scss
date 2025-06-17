@@ -1,0 +1,110 @@
+.tbox-wrapper {
+  --tbox-bd-color: var(--bs-border-color);
+  position: relative;
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  align-items: stretch;
+
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 2;
+  color: var(--bs-body-color);
+  background-color: var(--bs-body-bg);
+  background-clip: padding-box;
+  border: var(--bs-border-width) solid var(--tbox-bd-color);
+  border-radius: var(--bs-border-radius);
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+  &:has(> input:not(:read-only):focus) {
+    --tbox-bd-color: rgb(131.5, 168, 201.5);
+    color: var(--bs-body-color);
+    background-color: var(--bs-body-bg);
+    outline: 0;
+    box-shadow: 0px 0px 2px 3px rgba(8, 81, 148, 0.25);
+  }
+
+  & > input {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+
+    padding: 0.375rem 0.75rem;
+
+    flex-grow: 1;
+    font: inherit;
+    color: inherit;
+    border: none;
+    outline: 0;
+    background-color: transparent;
+  }
+
+  & > label {
+    transform: translateY(-50%);
+    position: absolute;
+    top: 50%;
+    left: 0.75rem;
+    user-select: none;
+    pointer-events: none;
+    transition: top 0.15s ease-in-out, font-size 0.15s ease-in-out, opacity 0.15s ease-in-out;
+  }
+
+  &:has(> input:required) {
+    & > label::after {
+      content: "*";
+      color: var(--bs-danger);
+      margin-left: 0.125rem;
+    }
+  }
+
+  &:has(> input:not(:read-only):focus),
+  &:has(> input:not(:placeholder-shown)) {
+    & > label {
+      top: 7px;
+      font-size: 0.75rem;
+      opacity: 0.7;
+    }
+  }
+
+  & > button {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    outline: 0;
+  }
+
+  & > button,
+  & > .tbox-btn,
+  & > .tbox-btn-toggle {
+    padding: 0.375rem 0.75rem;
+    display: inline-block;
+    color: inherit;
+    cursor: pointer;
+    border: var(--bs-border-width) solid var(--tbox-bd-color);
+    border-top: none;
+    border-bottom: none;
+    background-color: transparent;
+    &:last-child {
+      border-right: none;
+    }
+  }
+
+  & > .tbox-btn-toggle.tbox-btn-toggle-visibility::before {
+    display: inline-block;
+    font-family: bootstrap-icons !important;
+    font-style: normal;
+    font-weight: 400 !important;
+    font-feature-settings: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    vertical-align: -0.125rem;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    content: "\f33E";
+  }
+
+  &:has(> input[type="text"]) > .tbox-btn-toggle.tbox-btn-toggle-visibility::before {
+    content: "\f33F";
+  }
+}

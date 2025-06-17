@@ -1,0 +1,11 @@
+{
+  "jsxSingleQuote": false,
+  "bracketSameLine": false,
+  "htmlWhitespaceSensitivity": "css",
+  "printWidth": 100000,
+  "quoteProps": "as-needed",
+  "semi": true,
+  "singleQuote": false,
+  "singleAttributePerLine": true,
+  "trailingComma": "all"
+}

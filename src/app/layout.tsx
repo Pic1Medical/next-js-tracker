@@ -9,15 +9,11 @@ Amplify.configure(outputs);
 //import "bootstrap/dist/js/bootstrap.min.js"; NEXT.JS hates this import for some reason, AWS Amplify won't accept it if NEXT.JS doesn't.
 import "bootstrap-icons/font/bootstrap-icons.min.css";
 import "@aws-amplify/ui-react/styles.css";
-import "./style.scss";
+import "@lib/library";
 import Script from "next/script";
 
 // Export our "root" layout to begin our website.
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>
