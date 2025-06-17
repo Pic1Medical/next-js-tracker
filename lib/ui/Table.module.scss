@@ -1,0 +1,104 @@
+.table-border-wrapper {
+  display: block;
+  height: calc(100vh - 80px);
+  overflow: hidden;
+
+  color: var(--bs-light);
+  border: calc(var(--bs-border-width) * 2) solid var(--bs-primary);
+  border-radius: var(--bs-border-radius);
+  background-color: var(--bs-primary);
+}
+
+.table-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: scroll;
+  scrollbar-color: var(--bs-body-bg) var(--bs-primary);
+}
+
+.table {
+  display: table;
+  width: 100%;
+  min-height: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+
+  --tbl-border: var(--bs-border-width) solid var(--bs-body-color);
+
+  border-right: var(--tbl-border);
+
+  & > .thead {
+    display: table-header-group;
+
+    & > .trow {
+      position: sticky;
+      top: 0px;
+      z-index: 10000;
+      &:nth-child(even) {
+        --tbl-row-bg-mix: 10%;
+      }
+      background-color: color-mix(in srgb, var(--bs-body-bg) var(--tbl-row-bg-mix, 0%), var(--bs-primary));
+    }
+  }
+
+  & > .tfoot {
+    display: table-footer-group !important;
+    position: sticky;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+
+    & > .trow {
+      display: table-row;
+      &:nth-child(even) {
+        --tbl-row-bg-mix: 10%;
+      }
+      background-color: color-mix(in srgb, var(--bs-body-bg) var(--tbl-row-bg-mix, 0%), var(--bs-primary));
+
+      & > .tf {
+        display: table-cell;
+      }
+    }
+  }
+
+  & > .thead,
+  & > .tbody,
+  & > .tfoot {
+    & > .trow {
+      & > .th {
+        text-transform: capitalize;
+        border-bottom: var(--tbl-border);
+      }
+
+      & > .th,
+      & > .td {
+        display: table-cell;
+        padding: 0.375rem 0.75rem;
+        border-bottom: var(--tbl-border);
+        &:not(:last-child) {
+          border-right: var(--tbl-border);
+        }
+        white-space: nowrap;
+        width: fit-content;
+      }
+    }
+  }
+
+  & > .tbody {
+    display: table-row-group;
+
+    & > .trow {
+      &:nth-child(odd) {
+        --tbl-row-bg-mix: 15%;
+      }
+      &:hover {
+        --tbl-row-bg-mix: 50%;
+      }
+      color: var(--bs-body-color);
+      background-color: color-mix(in srgb, var(--bs-primary) var(--tbl-row-bg-mix, 30%), var(--bs-body-bg));
+    }
+  }
+}

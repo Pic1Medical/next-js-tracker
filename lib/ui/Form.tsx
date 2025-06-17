@@ -1,5 +1,5 @@
 "use client";
-import { FormHTMLAttributes, MouseEventHandler, useEffect, useRef, useState } from "react";
+import { FormEvent, FormEventHandler, FormHTMLAttributes, MouseEventHandler, useEffect, useRef, useState } from "react";
 import InputField, { InputFieldProps } from "./InputField";
 
 export type BreakPoint = "sm" | "md" | "lg" | undefined;
@@ -30,9 +30,10 @@ export interface FormState<T extends object> {
   data: Partial<T>;
 }
 
-export interface Properties<T extends object> extends Omit<FormHTMLAttributes<HTMLFormElement>, "children" | "id"> {
+export interface Properties<T extends object> extends Omit<FormHTMLAttributes<HTMLFormElement>, "children" | "id" | "onSubmit"> {
   id: string;
   disabled?: boolean;
+  onSubmit: (data: T) => Promise<void>;
   children?: Array<
     {
       key?: string | number;
@@ -59,7 +60,7 @@ export interface Properties<T extends object> extends Omit<FormHTMLAttributes<HT
 }
 
 export default function useForm<T extends object>(fields: Array<FormFieldRow<T>>) {
-  function Form({ id: formId, children, disabled: _disabled, ...props }: Properties<T>) {
+  function Form({ id: formId, children, disabled: _disabled, onSubmit, ...props }: Properties<T>) {
     const [disabled, setDisabled] = useState(_disabled);
     useEffect(() => {
       setDisabled(_disabled);
@@ -177,11 +178,15 @@ export default function useForm<T extends object>(fields: Array<FormFieldRow<T>>
       );
     }
 
+    const onSubmitCb = (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+    };
+
     return (
       <form
         id={formId}
         className="my-1"
-        onSubmit={(e) => e.preventDefault()}
+        onSubmit={onSubmitCb}
         {...props}
       >
         <fieldset

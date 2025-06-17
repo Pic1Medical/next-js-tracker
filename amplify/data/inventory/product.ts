@@ -1,5 +1,14 @@
 import { a } from "@aws-amplify/backend";
 
+export interface ProductType {
+  name: string;
+  desc: string | undefined;
+  partNo: string | undefined;
+  categoryId: string | undefined;
+  category: Array<object>;
+  stock: Array<object>;
+}
+
 export const Product = a
   .model({
     categoryId: a.id(),
