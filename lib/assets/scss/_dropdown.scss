@@ -1,0 +1,17 @@
+// .dropdown {
+//   position: relative;
+
+//   &:has(> .dropdown-toggle:not([aria-expanded="true"])) {
+//     & > .dropdown-menu {
+//       display: none;
+//     }
+//   }
+
+//   & > .dropdown-menu {
+//     position: absolute;
+//     z-index: 100000;
+
+//     color: var(--bs-body-color);
+//     background-color: var(--bs-body-bg);
+//   }
+// }

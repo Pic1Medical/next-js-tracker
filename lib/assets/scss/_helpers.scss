@@ -1,0 +1,12 @@
+.group {
+  &:not(:hover) {
+    & > .g-hover-show {
+      display: none !important;
+    }
+  }
+  &:hover {
+    & > .g-hover-hide {
+      display: none !important;
+    }
+  }
+}

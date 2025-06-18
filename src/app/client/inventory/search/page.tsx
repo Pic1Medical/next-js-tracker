@@ -139,86 +139,86 @@ export default function InventoryPage() {
               </>
             ),
           },
-          {
-            type: "dropdown",
-            label: (
-              <>
-                <i
-                  className="bi bi-plus-square"
-                  aria-hidden
-                >
-                  &nbsp;
-                </i>
-                New
-              </>
-            ),
-            options: [
-              {
-                label: (
-                  <>
-                    <i
-                      className="bi bi-box-seam"
-                      aria-hidden
-                    >
-                      &nbsp;
-                    </i>
-                    Stock
-                  </>
-                ),
-                onClick() {
-                  alert("New Stock");
-                },
-              },
-              {
-                label: (
-                  <>
-                    <i
-                      className="bi bi-cart"
-                      aria-hidden
-                    >
-                      &nbsp;
-                    </i>
-                    Product
-                  </>
-                ),
-                onClick() {
-                  alert("New Product");
-                },
-              },
-              {
-                label: (
-                  <>
-                    <i
-                      className="bi bi-geo-alt"
-                      aria-hidden
-                    >
-                      &nbsp;
-                    </i>
-                    Location
-                  </>
-                ),
-                async onClick() {
-                  await router.push("/client/inventory/create/location");
-                },
-              },
-              {
-                label: (
-                  <>
-                    <i
-                      className="bi bi-tags"
-                      aria-hidden
-                    >
-                      &nbsp;
-                    </i>
-                    Category
-                  </>
-                ),
-                onClick() {
-                  alert("New Category");
-                },
-              },
-            ],
-          },
+          // {
+          //   type: "dropdown",
+          //   label: (
+          //     <>
+          //       <i
+          //         className="bi bi-plus-square"
+          //         aria-hidden
+          //       >
+          //         &nbsp;
+          //       </i>
+          //       New
+          //     </>
+          //   ),
+          //   options: [
+          //     {
+          //       label: (
+          //         <>
+          //           <i
+          //             className="bi bi-box-seam"
+          //             aria-hidden
+          //           >
+          //             &nbsp;
+          //           </i>
+          //           Stock
+          //         </>
+          //       ),
+          //       onClick() {
+          //         alert("New Stock");
+          //       },
+          //     },
+          //     {
+          //       label: (
+          //         <>
+          //           <i
+          //             className="bi bi-cart"
+          //             aria-hidden
+          //           >
+          //             &nbsp;
+          //           </i>
+          //           Product
+          //         </>
+          //       ),
+          //       onClick() {
+          //         alert("New Product");
+          //       },
+          //     },
+          //     {
+          //       label: (
+          //         <>
+          //           <i
+          //             className="bi bi-geo-alt"
+          //             aria-hidden
+          //           >
+          //             &nbsp;
+          //           </i>
+          //           Location
+          //         </>
+          //       ),
+          //       async onClick() {
+          //         await router.push("/client/inventory/create/location");
+          //       },
+          //     },
+          //     {
+          //       label: (
+          //         <>
+          //           <i
+          //             className="bi bi-tags"
+          //             aria-hidden
+          //           >
+          //             &nbsp;
+          //           </i>
+          //           Category
+          //         </>
+          //       ),
+          //       onClick() {
+          //         alert("New Category");
+          //       },
+          //     },
+          //   ],
+          //  },
         ]}
       </form.Form>
       <hr />

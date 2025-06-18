@@ -113,7 +113,7 @@ export default function makeTable<T extends object>(columnDefs: Array<ColumnDef<
                 <tr className={styles["trow"]}>
                   <td
                     className={`${styles["td"]} text-center fw-bold`}
-                    colSpan={columns.length + 1}
+                    colSpan={columns.length + 2}
                   >
                     No results...
                   </td>
@@ -124,6 +124,9 @@ export default function makeTable<T extends object>(columnDefs: Array<ColumnDef<
                   key={idx}
                   className={styles["trow"]}
                 >
+                  <td className={styles["td"]}>
+                    <input type="checkbox" />
+                  </td>
                   {columns.map((col) => (
                     <td
                       key={String(col.name)}
@@ -140,7 +143,7 @@ export default function makeTable<T extends object>(columnDefs: Array<ColumnDef<
               <tr className={styles["trow"]}>
                 <th
                   className={styles["tf"]}
-                  colSpan={columns.length + 1}
+                  colSpan={columns.length + 2}
                 >
                   <div className="d-flex flex-row flex-nowrap px-2 py-1">
                     <button

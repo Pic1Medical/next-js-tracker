@@ -1,0 +1,294 @@
+@use "theme" as *;
+
+.btn {
+  &:is(button),
+  &:is(input),
+  &:is(a) {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+  }
+
+  &:is(a) {
+    text-decoration: none;
+  }
+
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  --btn-fg: var(--bs-body-color);
+  --btn-bg: var(--bs-body-bg);
+  --btn-bd-width: var(--bs-border-width);
+  --btn-bd-style: solid;
+  --btn-bd-color: var(--bs-border-color);
+  --btn-bd-radius: var(--bs-border-radius);
+  --btn-box-shadow: none;
+  --btn-cursor: pointer;
+  --btn-opacity: 1;
+
+  --btn-px: 0.75rem;
+  --btn-py: 0.375rem;
+
+  @each $variant in $color-variants {
+    &.btn-#{$variant} {
+      @if $variant != light {
+        --btn-fg: var(--bs-light);
+      } @else {
+        --btn-fg: var(--bs-dark);
+      }
+      --btn-bg: var(--bs-#{$variant});
+      --btn-bd-color: var(--bs-#{$variant});
+
+      &:not([disabled]):not([aria-disabled]) {
+        &:focus {
+          --btn-opacity: 0.9;
+          --btn-box-shadow: 0 0 0 3px rgba(var(--bs-#{$variant}-rgb), 0.3);
+        }
+
+        &:hover {
+          --btn-opacity: 0.8;
+          --btn-box-shadow: 0 0 0 3px rgba(var(--bs-#{$variant}-rgb), 0.3);
+        }
+
+        &:active {
+          --btn-opacity: 0.4;
+          --btn-box-shadow: none;
+        }
+      }
+    }
+
+    &.btn-outline-#{$variant} {
+      --btn-fg: var(--bs-#{$variant});
+      --btn-bg: transparent;
+      --btn-bd-color: var(--bs-#{$variant});
+
+      &:not([disabled]):not([aria-disabled]) {
+        &:focus {
+          @if $variant != light {
+            --btn-fg: var(--bs-light);
+          } @else {
+            --btn-fg: var(--bs-dark);
+          }
+          --btn-bg: var(--bs-#{$variant});
+          --btn-box-shadow: 0 0 0 4px rgba(var(--bs-#{$variant}-rgb), 0.3);
+        }
+
+        &:hover {
+          @if $variant != light {
+            --btn-fg: var(--bs-light);
+          } @else {
+            --btn-fg: var(--bs-dark);
+          }
+          --btn-bg: var(--bs-#{$variant});
+        }
+
+        &:active {
+          --btn-box-shadow: 0 0 0 2px rgba(var(--bs-#{$variant}-rgb), 0.3);
+        }
+      }
+    }
+
+    &.btn-text-#{$variant} {
+      --btn-fg: var(--bs-#{$variant});
+      --btn-bg: transparent;
+      --btn-bd-color: transparent;
+
+      &:not([disabled]):not([aria-disabled]) {
+        &:focus {
+          @if $variant != light {
+            --btn-fg: var(--bs-light);
+          } @else {
+            --btn-fg: var(--bs-dark);
+          }
+          --btn-bg: var(--bs-#{$variant});
+          --btn-box-shadow: 0 0 0 4px rgba(var(--bs-#{$variant}-rgb), 0.3);
+        }
+
+        &:hover {
+          @if $variant != light {
+            --btn-fg: var(--bs-light);
+          } @else {
+            --btn-fg: var(--bs-dark);
+          }
+          --btn-bg: var(--bs-#{$variant});
+        }
+
+        &:active {
+          --btn-box-shadow: 0 0 0 2px rgba(var(--bs-#{$variant}-rgb), 0.3);
+        }
+      }
+    }
+
+    &.btn-toggle-#{$variant} {
+      --btn-fg: var(--bs-#{$variant});
+      --btn-bg: transparent;
+      --btn-bd-color: transparent;
+
+      &[aria-selected="true"] {
+        @if $variant != light {
+          --btn-fg: var(--bs-light);
+        } @else {
+          --btn-fg: var(--bs-dark);
+        }
+        --btn-bg: var(--bs-#{$variant});
+      }
+
+      &:not([disabled]):not([aria-disabled]) {
+        &:focus {
+          @if $variant != light {
+            --btn-fg: var(--bs-light);
+          } @else {
+            --btn-fg: var(--bs-dark);
+          }
+          --btn-bg: var(--bs-#{$variant});
+          --btn-box-shadow: 0 0 0 4px rgba(var(--bs-#{$variant}-rgb), 0.3);
+        }
+
+        &:hover {
+          @if $variant != light {
+            --btn-fg: var(--bs-light);
+          } @else {
+            --btn-fg: var(--bs-dark);
+          }
+          --btn-bg: rgba(var(--bs-#{$variant}-rgb), 0.8);
+        }
+
+        &:active {
+          --btn-box-shadow: 0 0 0 2px rgba(var(--bs-#{$variant}-rgb), 0.3);
+        }
+      }
+    }
+  }
+
+  &.btn-link {
+    --btn-fg: currentColor;
+    --btn-bg: transparent;
+    --btn-bd-color: transparent;
+    text-decoration: underline;
+    text-decoration-color: #0000;
+
+    &:focus {
+      --btn-bd-color: currentColor;
+      text-decoration-color: currentColor;
+    }
+
+    &:hover {
+      text-decoration-color: currentColor;
+    }
+
+    &:active {
+      --btn-opacity: 0.8;
+    }
+  }
+
+  &.btn-icon {
+    --btn-px: 0.15rem;
+    --btn-py: 0.15rem;
+    --btn-fg: currentColor;
+    --btn-bg: transparent;
+    --btn-bd-color: transparent;
+
+    & > img {
+      aspect-ratio: 1/1;
+    }
+
+    &:focus {
+      --btn-bd-color: currentColor;
+    }
+
+    &:hover {
+      --btn-bd-color: currentColor;
+    }
+
+    &:active {
+      --btn-bg: currentColor;
+      --btn-opacity: 0.8;
+    }
+  }
+
+  &.btn-inline {
+    --btn-bd-radius: 0;
+    width: 100%;
+  }
+
+  &[disabled],
+  &[aria-disabled] {
+    --btn-cursor: not-allowed !important;
+    --btn-opacity: 0.5;
+  }
+
+  color: var(--btn-fg);
+  cursor: var(--btn-cursor);
+  border: var(--btn-bd-width) var(--btn-bd-style) var(--btn-bd-color);
+  padding: var(--btn-py) var(--btn-px);
+  outline: none;
+  opacity: var(--btn-opacity);
+  border-radius: var(--btn-bd-radius);
+  background: var(--btn-bg);
+  box-shadow: var(--btn-box-shadow);
+
+  @media (prefers-reduced-motion: no-preference) {
+    transition-property: color, background-color, border-color, box-shadow, text-decoration-color;
+    transition-duration: 0.15s;
+    transition-timing-function: ease-in-out;
+  }
+}
+
+.btn-group {
+  position: relative;
+  display: inline-flex;
+  vertical-align: middle;
+
+  &.btn-group-inline {
+    & > .btn {
+      border-radius: 0 !important;
+    }
+  }
+
+  & > .btn {
+    position: relative;
+    flex: 1 1 auto;
+
+    &:not(:first-child) {
+      border-top-left-radius: 0;
+      border-bottom-left-radius: 0;
+    }
+
+    &:not(:last-child) {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+  }
+}
+
+.btn-sm,
+.btn-group-sm > .btn {
+  --btn-px: 0.25rem;
+  --btn-py: 0.125rem;
+}
+
+.btn-grid {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+
+  &.btn-grid-reverse {
+    flex-direction: column-reverse;
+  }
+
+  &[aria-expanded="true"] {
+    flex-wrap: wrap;
+    flex-direction: row;
+    &.btn-grid-reverse {
+      flex-direction: row-reverse;
+    }
+
+    & > .btn {
+      display: inline-flex;
+      width: unset !important;
+    }
+  }
+}

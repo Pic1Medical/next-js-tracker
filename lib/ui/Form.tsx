@@ -223,7 +223,7 @@ export default function useForm<T extends object>(fields: Array<FormFieldRow<T>>
                     case "dropdown":
                       return (
                         <div
-                          className="btn-group"
+                          className="btn-group dropdown"
                           role="group"
                           key={props.key ?? idx}
                         >

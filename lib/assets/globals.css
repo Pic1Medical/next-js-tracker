@@ -23,10 +23,6 @@ body:has(> div):not(:has(> main)) {
   pointer-events: none;
 }
 
-body > header {
-  background-color: var(--bs-primary);
-}
-
 body > main {
   position: relative;
   flex-grow: 1;

@@ -1,7 +1,7 @@
 "use client";
 import { type UseAuthenticator } from "@aws-amplify/ui-react";
 import React from "react";
-import Header from "@components/Header";
+import Header from "@lib/ui/Header";
 import Authenticator from "@components/Authenticator";
 
 function ClientLayoutImpl(
@@ -9,7 +9,7 @@ function ClientLayoutImpl(
   props: {
     signOut?: UseAuthenticator["signOut"];
     user?: UseAuthenticator["user"];
-  }
+  },
 ) {
   return (
     <>
@@ -19,11 +19,7 @@ function ClientLayoutImpl(
   );
 }
 
-export default function ClientLayout({
-  ...props
-}: {
-  children: React.ReactNode;
-}) {
+export default function ClientLayout({ ...props }: { children: React.ReactNode }) {
   const Layout = ClientLayoutImpl.bind(null, props);
   return (
     <>
