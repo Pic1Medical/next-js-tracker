@@ -9,5 +9,7 @@
     "package.json": "package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb, bun.lock, amplify.yml, .git*, .editorconfig, amplify*",
     "next.config.*": "next-env.d.ts, tsconfig.json",
     "README.md": "*.md, LICENSE"
-  }
+  },
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
 }

@@ -7,6 +7,7 @@ import AddStockProductModal from "@/src/components/modals/AddStockProductModal";
 import AddLocationModal from "@/src/components/modals/AddLocationModal";
 import AddCategoryModal from "@/src/components/modals/AddCategoryModal";
 import EditStockModal from "@/src/components/modals/EditStockModal";
+import SelectBox from "@/src/components/ui/SelectBox";
 
 const client = generateClient<Schema>();
 
@@ -32,10 +33,12 @@ function Form({
   const [locations, setLocations] = useState<Array<[string, string]>>([]);
   const [categories, setCategories] = useState<Array<[string, string]>>([]);
   const [products, setProducts] = useState<Array<[string, string]>>([]);
+  const [partNumbers, setPartNumbers] = useState<Array<string>>([]);
 
   const categoryState = useState("");
   const locationState = useState("");
   const productState = useState("");
+  const partNumberState = useState("");
 
   const onSubmit = (e: FormEvent<HTMLFormElement> | undefined) => {
     if (e) e.preventDefault();
@@ -56,10 +59,21 @@ function Form({
           }
           if (categoryState[0].length > 0) {
             setStock(
-              await v.data.filter(
-                async (t) =>
-                  (await t.product()).data?.categoryId == categoryState[0]
-              )
+              await v.data.filter(async (t) => {
+                const data = (await t.product()).data;
+                if (!data) return false;
+                if (
+                  categoryState[0].length &&
+                  data.categoryId !== categoryState[0]
+                )
+                  return false;
+                if (
+                  partNumberState[0].length &&
+                  data.partNo !== partNumberState[0]
+                )
+                  return false;
+                return true;
+              })
             );
           } else setStock(v.data);
         })
@@ -69,6 +83,8 @@ function Form({
       if (productState[0].length > 0) filters["id"] = { eq: productState[0] };
       if (categoryState[0].length > 0)
         filters["categoryId"] = { eq: categoryState[0] };
+      if (partNumberState[0].length > 0)
+        filters["partNo"] = { eq: partNumberState[0] };
       client.models.Product.list({
         filter: filters,
       })
@@ -104,49 +120,80 @@ function Form({
       setProducts(v.items.map((v) => [v.id, v.name]))
     );
 
+    const sub4 = client.models.Product.observeQuery().subscribe((v) =>
+      setPartNumbers(v.items.filter((v) => !!v.partNo).map((v) => v.partNo!))
+    );
+
     return () => {
       sub1.unsubscribe();
       sub2.unsubscribe();
       sub3.unsubscribe();
+      sub4.unsubscribe();
     };
   }, []);
 
   return (
-    <form className="mx-2 my-1" onSubmit={onSubmit}>
-      <fieldset className="container-fluid" disabled={busy}>
+    <form
+      className="mx-2 my-1"
+      onSubmit={onSubmit}
+    >
+      <fieldset
+        className="container-fluid"
+        disabled={busy}
+      >
         <legend>Inventory Search</legend>
         <div className="row">
           <div className="col-md mb-2">
-            <InputGroup
+            <SelectBox
               id="Category"
-              label="Category"
-              list={categories}
               state={categoryState}
-            />
+              options={categories}
+            >
+              Category
+            </SelectBox>
           </div>
           <div className="col-md mb-2">
-            <InputGroup
+            <SelectBox
               id="Locations"
-              label="Locations"
-              list={locations}
               state={locationState}
+              options={locations}
               disabled={showOutOfStock}
-            />
+            >
+              Locations
+            </SelectBox>
           </div>
         </div>
         <div className="row">
-          <div className="col-xl mb-2">
-            <InputGroup
+          <div className="col-md mb-2">
+            <SelectBox
               id="product-name"
-              label="Product"
-              list={products}
               state={productState}
-            />
+              options={products}
+            >
+              Product
+            </SelectBox>
           </div>
+          <div className="col-md mb-2">
+            <SelectBox
+              id="part-number"
+              state={partNumberState}
+              options={partNumbers}
+            >
+              Part&nbsp;#
+            </SelectBox>
+          </div>
+        </div>
+        <div className="row">
           <div className="col-xl">
             <div className="btn-group w-100">
-              <button type="submit" className="btn btn-outline-primary">
-                <i className="bi bi-search" aria-hidden>
+              <button
+                type="submit"
+                className="btn btn-outline-primary"
+              >
+                <i
+                  className="bi bi-search"
+                  aria-hidden
+                >
                   &nbsp;
                 </i>
                 Search
@@ -157,7 +204,10 @@ function Form({
                 data-bs-toggle="modal"
                 data-bs-target="#add-stock-product-modal"
               >
-                <i className="bi bi-plus-square" aria-hidden>
+                <i
+                  className="bi bi-plus-square"
+                  aria-hidden
+                >
                   &nbsp;
                 </i>
                 Add&nbsp;Product
@@ -168,7 +218,10 @@ function Form({
                 data-bs-toggle="modal"
                 data-bs-target="#add-location-modal"
               >
-                <i className="bi bi-cloud-plus" aria-hidden>
+                <i
+                  className="bi bi-cloud-plus"
+                  aria-hidden
+                >
                   &nbsp;
                 </i>
                 Add&nbsp;Location
@@ -179,7 +232,10 @@ function Form({
                 data-bs-toggle="modal"
                 data-bs-target="#add-category-modal"
               >
-                <i className="bi bi-bookmark-plus" aria-hidden>
+                <i
+                  className="bi bi-bookmark-plus"
+                  aria-hidden
+                >
                   &nbsp;
                 </i>
                 Add&nbsp;Category
@@ -250,7 +306,10 @@ function StockItem({
   if (!product || !location)
     return (
       <tr key={stock.id}>
-        <td colSpan={4} className="placeholder"></td>
+        <td
+          colSpan={5}
+          className="placeholder"
+        ></td>
       </tr>
     );
   return (
@@ -336,7 +395,7 @@ function Table({
             ))}
             {!stock.length && (
               <tr>
-                <td colSpan={4}>No results...</td>
+                <td colSpan={5}>No results...</td>
               </tr>
             )}
           </tbody>
@@ -344,9 +403,12 @@ function Table({
         {busy && (
           <tbody className="table-secondary">
             <tr>
-              <td colSpan={4}>
+              <td colSpan={5}>
                 <div className="d-flex align-items-center justify-content-center">
-                  <div className="spinner-border" role="status">
+                  <div
+                    className="spinner-border"
+                    role="status"
+                  >
                     <div className="visually-hidden">Loading</div>
                   </div>
                 </div>
@@ -389,7 +451,10 @@ function ProductItem({
   if (!category)
     return (
       <tr key={product.id}>
-        <td colSpan={4} className="placeholder"></td>
+        <td
+          colSpan={4}
+          className="placeholder"
+        ></td>
       </tr>
     );
   return (
@@ -454,7 +519,10 @@ function ProductTable({
       {!busy && (
         <tbody className="table-secondary">
           {product.map((s) => (
-            <ProductItem product={s} {...{ refresh }} />
+            <ProductItem
+              product={s}
+              {...{ refresh }}
+            />
           ))}
           {!product.length && (
             <tr>
@@ -468,7 +536,10 @@ function ProductTable({
           <tr>
             <td colSpan={4}>
               <div className="d-flex align-items-center justify-content-center">
-                <div className="spinner-border" role="status">
+                <div
+                  className="spinner-border"
+                  role="status"
+                >
                   <div className="visually-hidden">Loading</div>
                 </div>
               </div>
