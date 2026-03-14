@@ -91,13 +91,4 @@
   .theme {
     --font-sans: var(--font-sans);
   }
-  * {
-    @apply outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-  html {
-    @apply font-sans;
-  }
 }
