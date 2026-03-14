@@ -20,7 +20,5 @@
     width: fit-content;
     min-width: 480px;
     max-width: 720px;
-
-    @apply bg-primary-500;
   }
 }
