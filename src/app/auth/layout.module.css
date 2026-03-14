@@ -1,0 +1,26 @@
+.auth-layout-main {
+  display: flex;
+  flex-wrap: nowrap;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  background-color: #0000;
+  background-image: linear-gradient(#e6e6e65c, #e6e6e65c),
+    url("/pic1medical-hero.png");
+  background-position: 0 0, 50%;
+  background-size: auto, cover;
+  width: 100svw;
+  height: 100svh;
+
+  & > .auth-layout-container {
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    width: fit-content;
+    min-width: 480px;
+    max-width: 720px;
+
+    @apply bg-primary-500;
+  }
+}
