@@ -12,13 +12,4 @@
   background-size: auto, cover;
   width: 100svw;
   height: 100svh;
-
-  & > .auth-layout-container {
-    display: flex;
-    flex-wrap: nowrap;
-    flex-direction: column;
-    width: fit-content;
-    min-width: 480px;
-    max-width: 720px;
-  }
 }
