@@ -24,7 +24,7 @@ export default function RootLayout({
       <head>
         <title>Pic1Medical</title>
       </head>
-      <body>{children}</body>
+      <body className="dark">{children}</body>
     </html>
   );
 }
