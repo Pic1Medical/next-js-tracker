@@ -6,14 +6,23 @@ import {
   MenubarGroup,
   MenubarItem,
   MenubarMenu,
+  MenubarSeparator,
+  MenubarSub,
+  MenubarSubContent,
+  MenubarSubTrigger,
   MenubarTrigger,
 } from "@/src/components/ui/menubar";
 import {
   BoxesIcon,
   BoxIcon,
+  DatabaseIcon,
   EraserIcon,
+  MapPinIcon,
   PlusIcon,
   SearchIcon,
+  TagsIcon,
+  TriangleAlertIcon,
+  WarehouseIcon,
 } from "lucide-react";
 import Link from "next/link";
 
@@ -27,128 +36,122 @@ export default function TrackerMenubar() {
       <Menubar>
         <MenubarMenu>
           <MenubarTrigger>
-            <BoxIcon
+            <DatabaseIcon
               size="15"
               className="mr-1"
             />
-            <span>Stock</span>
+            <span>Database</span>
           </MenubarTrigger>
           <MenubarContent>
             <MenubarGroup>
-              <MenubarItem asChild>
-                <Link href="/client/tracker/stock">
-                  <SearchIcon />
-                  <span>Search Stock</span>
-                </Link>
-              </MenubarItem>
-              <MenubarItem asChild>
-                <Link href="/client/tracker/stock/create">
-                  <PlusIcon />
-                  <span>New Entry</span>
-                </Link>
-              </MenubarItem>
+              <MenubarSub>
+                <MenubarSubTrigger>
+                  <WarehouseIcon
+                    size="15"
+                    className="mr-1"
+                  />
+                  <span>Stock</span>
+                </MenubarSubTrigger>
+                <MenubarSubContent>
+                  <MenubarGroup>
+                    <MenubarItem asChild>
+                      <Link href="/client/tracker/stock">
+                        <SearchIcon />
+                        <span>Search Entries</span>
+                      </Link>
+                    </MenubarItem>
+                    <MenubarItem asChild>
+                      <Link href="/client/tracker/stock/create">
+                        <PlusIcon />
+                        <span>Create Entry</span>
+                      </Link>
+                    </MenubarItem>
+                  </MenubarGroup>
+                </MenubarSubContent>
+              </MenubarSub>
+              <MenubarSub>
+                <MenubarSubTrigger>
+                  <BoxIcon
+                    size="15"
+                    className="mr-1"
+                  />
+                  <span>Product</span>
+                </MenubarSubTrigger>
+                <MenubarSubContent>
+                  <MenubarGroup>
+                    <MenubarItem asChild>
+                      <Link href="/client/tracker/product">
+                        <SearchIcon />
+                        <span>Search Product</span>
+                      </Link>
+                    </MenubarItem>
+                    <MenubarItem asChild>
+                      <Link href="/client/tracker/product/create">
+                        <PlusIcon />
+                        <span>New Entry</span>
+                      </Link>
+                    </MenubarItem>
+                  </MenubarGroup>
+                </MenubarSubContent>
+              </MenubarSub>
+              <MenubarSub>
+                <MenubarSubTrigger>
+                  <BoxIcon
+                    size="15"
+                    className="mr-1"
+                  />
+                  <span>Category</span>
+                </MenubarSubTrigger>
+                <MenubarSubContent>
+                  <MenubarGroup>
+                    <MenubarItem asChild>
+                      <Link href="/client/tracker/category">
+                        <TagsIcon />
+                        <span>Search Category</span>
+                      </Link>
+                    </MenubarItem>
+                    <MenubarItem asChild>
+                      <Link href="/client/tracker/category/create">
+                        <PlusIcon />
+                        <span>New Entry</span>
+                      </Link>
+                    </MenubarItem>
+                  </MenubarGroup>
+                </MenubarSubContent>
+              </MenubarSub>
+              <MenubarSub>
+                <MenubarSubTrigger>
+                  <MapPinIcon
+                    size="15"
+                    className="mr-1"
+                  />
+                  <span>Location</span>
+                </MenubarSubTrigger>
+                <MenubarSubContent>
+                  <MenubarGroup>
+                    <MenubarItem asChild>
+                      <Link href="/client/tracker/location">
+                        <SearchIcon />
+                        <span>Search Location</span>
+                      </Link>
+                    </MenubarItem>
+                    <MenubarItem asChild>
+                      <Link href="/client/tracker/location/create">
+                        <PlusIcon />
+                        <span>New Entry</span>
+                      </Link>
+                    </MenubarItem>
+                  </MenubarGroup>
+                </MenubarSubContent>
+              </MenubarSub>
+              <MenubarSeparator />
               <MenubarItem
                 variant="destructive"
                 disabled
               >
                 <EraserIcon />
-                <span>Remove Entry</span>
-              </MenubarItem>
-            </MenubarGroup>
-          </MenubarContent>
-        </MenubarMenu>
-        <MenubarMenu>
-          <MenubarTrigger>
-            <BoxIcon
-              size="15"
-              className="mr-1"
-            />
-            <span>Product</span>
-          </MenubarTrigger>
-          <MenubarContent>
-            <MenubarGroup>
-              <MenubarItem asChild>
-                <Link href="/client/tracker/product">
-                  <SearchIcon />
-                  <span>Search Product</span>
-                </Link>
-              </MenubarItem>
-              <MenubarItem asChild>
-                <Link href="/client/tracker/product/create">
-                  <PlusIcon />
-                  <span>New Entry</span>
-                </Link>
-              </MenubarItem>
-              <MenubarItem
-                variant="destructive"
-                disabled
-              >
-                <EraserIcon />
-                <span>Remove Entry</span>
-              </MenubarItem>
-            </MenubarGroup>
-          </MenubarContent>
-        </MenubarMenu>
-        <MenubarMenu>
-          <MenubarTrigger>
-            <BoxIcon
-              size="15"
-              className="mr-1"
-            />
-            <span>Category</span>
-          </MenubarTrigger>
-          <MenubarContent>
-            <MenubarGroup>
-              <MenubarItem asChild>
-                <Link href="/client/tracker/category">
-                  <SearchIcon />
-                  <span>Search Category</span>
-                </Link>
-              </MenubarItem>
-              <MenubarItem asChild>
-                <Link href="/client/tracker/category/create">
-                  <PlusIcon />
-                  <span>New Entry</span>
-                </Link>
-              </MenubarItem>
-              <MenubarItem
-                variant="destructive"
-                disabled
-              >
-                <EraserIcon />
-                <span>Remove Entry</span>
-              </MenubarItem>
-            </MenubarGroup>
-          </MenubarContent>
-        </MenubarMenu>
-        <MenubarMenu>
-          <MenubarTrigger>
-            <BoxIcon
-              size="15"
-              className="mr-1"
-            />
-            <span>Location</span>
-          </MenubarTrigger>
-          <MenubarContent>
-            <MenubarGroup>
-              <MenubarItem asChild>
-                <Link href="/client/tracker/location">
-                  <SearchIcon />
-                  <span>Search Location</span>
-                </Link>
-              </MenubarItem>
-              <MenubarItem asChild>
-                <Link href="/client/tracker/location/create">
-                  <PlusIcon />
-                  <span>New Entry</span>
-                </Link>
-              </MenubarItem>
-              <MenubarItem
-                variant="destructive"
-                disabled
-              >
-                <EraserIcon />
-                <span>Remove Entry</span>
+                <span>Delete Current</span>
+                <TriangleAlertIcon />
               </MenubarItem>
             </MenubarGroup>
           </MenubarContent>

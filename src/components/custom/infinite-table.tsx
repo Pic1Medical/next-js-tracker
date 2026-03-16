@@ -4,8 +4,6 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
-  getPaginationRowModel,
-  TableState,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -15,50 +13,32 @@ import {
   TableCell,
   TableHead,
   TableHeader,
+  TableFooter,
   TableRow,
 } from "@components/ui/table";
 import { Button } from "../ui/button";
-import { ArrowLeftIcon, ArrowRightIcon } from "lucide-react";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { ArrowDownToLineIcon } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  pageSize: number;
-  hasPrev: boolean;
   hasMore: boolean;
-  setPage: Dispatch<SetStateAction<number>>;
+  loadMore: () => void;
+  loading: boolean;
 }
 
-export function DataTable<TData, TValue>({
+export function InfiniteDataTable<TData, TValue>({
   columns,
   data,
-  pageSize,
-  hasPrev,
   hasMore,
-  setPage,
+  loadMore,
+  loading,
 }: DataTableProps<TData, TValue>) {
-  const [state, setState] = useState<TableState>({
-    pagination: {
-      pageIndex: 0,
-      pageSize,
-    },
-  } as TableState);
   const table = useReactTable({
     data,
     columns,
-    state,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    onStateChange(updater) {
-      if (updater instanceof Function) setState((prev) => updater(prev));
-      else setState(updater);
-    },
   });
-
-  useEffect(() => {
-    setPage(state.pagination?.pageIndex ?? 0);
-  }, [state, setPage]);
 
   return (
     <>
@@ -99,7 +79,7 @@ export function DataTable<TData, TValue>({
                   ))}
                 </TableRow>
               ))
-            ) : (
+            ) : loading ? null : (
               <TableRow>
                 <TableCell
                   colSpan={columns.length}
@@ -109,28 +89,64 @@ export function DataTable<TData, TValue>({
                 </TableCell>
               </TableRow>
             )}
+            {loading ? (
+              <>
+                <TableRow
+                  role="status"
+                  className="animate-pulse"
+                >
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-8 bg-card"
+                  ></TableCell>
+                </TableRow>
+                <TableRow
+                  role="status"
+                  className="animate-pulse delay-150"
+                >
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-8 bg-card text-center"
+                  >
+                    Loading...
+                  </TableCell>
+                </TableRow>
+                <TableRow
+                  role="status"
+                  className="animate-pulse delay-300"
+                >
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-8 bg-card"
+                  ></TableCell>
+                </TableRow>
+              </>
+            ) : null}
           </TableBody>
+          {data.length > 0 ? (
+            <TableFooter>
+              <TableRow>
+                <TableCell colSpan={columns.length}>
+                  {hasMore ? (
+                    <Button
+                      className="w-full"
+                      variant="ghost"
+                      onClick={loadMore}
+                      disabled={loading}
+                    >
+                      <span>Show More</span>
+                      <ArrowDownToLineIcon />
+                    </Button>
+                  ) : (
+                    <p>
+                      Showing all {data.length} results, nothing left to load...
+                    </p>
+                  )}
+                </TableCell>
+              </TableRow>
+            </TableFooter>
+          ) : null}
         </Table>
-      </div>
-      <div className="flex items-center justify-start space-x-2 py-4">
-        <div className="ml-auto flex gap-2">
-          <Button
-            variant="secondary"
-            title="Previous Page"
-            onClick={table.previousPage}
-            disabled={!table.getCanPreviousPage() && !hasPrev}
-          >
-            <ArrowLeftIcon />
-          </Button>
-          <Button
-            variant="secondary"
-            title="Next Page"
-            onClick={table.nextPage}
-            disabled={!table.getCanNextPage() && !hasMore}
-          >
-            <ArrowRightIcon />
-          </Button>
-        </div>
       </div>
     </>
   );

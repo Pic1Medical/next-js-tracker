@@ -1,5 +1,10 @@
 import { client } from "./client";
 
+export interface GetProductsOptions {
+  limit?: number;
+  cursor?: string | null;
+}
+
 export interface ProductType {
   categoryId: string;
   category: { name: string };
@@ -8,16 +13,23 @@ export interface ProductType {
   partNo: string;
 }
 
-export async function getProducts(): Promise<Array<ProductType>> {
+export async function getProducts({
+  limit,
+  cursor,
+}: Readonly<GetProductsOptions>): Promise<
+  [Array<ProductType>, string | null | undefined]
+> {
   const results: Array<ProductType> = [];
-  const response = await client.models.Product.list({});
+  const response = await client.models.Product.list({
+    limit,
+    nextToken: cursor,
+  });
   if (!(!response || !response.data)) {
     let cacheCategory: Record<
       ProductType["categoryId"],
       ProductType["category"]
     > = {};
     for (const res of response.data) {
-      console.log(res.categoryId, res.categoryId! in cacheCategory);
       let category = cacheCategory[res.categoryId!];
       if (!category) {
         const response = await res.category();
@@ -36,8 +48,10 @@ export async function getProducts(): Promise<Array<ProductType>> {
       } as ProductType);
     }
   }
-  return results;
+  return [results, response.nextToken];
 }
+
+export interface GetProductsWithStockInfoOptions extends GetProductsOptions {}
 
 export interface StockInfoType {}
 
@@ -45,6 +59,13 @@ export interface ProductWithStockInfoType extends ProductType {
   stock: Array<StockInfoType>;
 }
 
-export async function getProductsWithStockInfo() {
-  return (await getProducts()) as unknown as Array<ProductWithStockInfoType>;
+export async function getProductsWithStockInfo({
+  ...opts
+}: GetProductsWithStockInfoOptions): Promise<
+  [Array<ProductWithStockInfoType>, string | null | undefined]
+> {
+  return (await getProducts({ ...opts })) as unknown as [
+    Array<ProductWithStockInfoType>,
+    string
+  ];
 }
