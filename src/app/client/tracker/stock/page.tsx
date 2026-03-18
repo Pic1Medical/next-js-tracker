@@ -6,13 +6,7 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/src/components/ui/collapsible";
-import {
-  FieldSet,
-  Field,
-  FieldLabel,
-  FieldError,
-} from "@/src/components/ui/field";
-import { Input } from "@/src/components/ui/input";
+import { FieldSet, Field, FieldError } from "@/src/components/ui/field";
 import {
   Select,
   SelectContent,
@@ -28,10 +22,16 @@ import {
 } from "@/src/components/ui/tooltip";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
+  ArrowUpCircleIcon,
+  ArrowUpIcon,
   ChevronsUpDownIcon,
+  EyeIcon,
+  HelpCircleIcon,
   InfoIcon,
+  PencilIcon,
   SearchIcon,
   TextCursorInputIcon,
+  TrashIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -39,9 +39,14 @@ import z from "zod";
 import { columns } from "./_columndef";
 import { ProductWithStockInfoType } from "@/src/api/product";
 import { client } from "@/src/api/client";
+import InputField from "@/src/components/custom/InputField";
+import SelectField from "@/src/components/custom/SelectField";
+import { ButtonGroup } from "@/src/components/ui/button-group";
 
 const formSchema = z.object({
   name: z.string().optional(),
+  partNo: z.string().optional(),
+  categoryId: z.string().optional(),
 });
 
 type FormSchema = z.infer<typeof formSchema>;
@@ -49,6 +54,8 @@ type FormSchema = z.infer<typeof formSchema>;
 export default function StockSearchPage() {
   const [filters, setFilters] = useState<Record<string, string | undefined>>({
     name: "",
+    partNo: "",
+    categoryId: "",
   });
   const [limit, setLimit] = useState("10");
   const [entries, setEntries] = useState<Array<ProductWithStockInfoType>>([]);
@@ -61,6 +68,8 @@ export default function StockSearchPage() {
     mode: "onTouched",
     defaultValues: {
       name: "",
+      partNo: "",
+      categoryId: "",
     },
   });
 
@@ -91,10 +100,11 @@ export default function StockSearchPage() {
     let filter: object | undefined = undefined;
     for (const fname in filters) {
       const fvalue = filters[fname];
-      if (typeof fvalue !== "string") continue;
+      const mode = fname.endsWith("Id") ? "eq" : "contains";
+      if (typeof fvalue !== "string" || !fvalue.length) continue;
       filter = {
         [fname]: {
-          contains: fvalue,
+          [mode]: fvalue,
         },
         and: filter,
       };
@@ -105,12 +115,23 @@ export default function StockSearchPage() {
       limit: Number.parseInt(limit),
       nextToken: cursor,
     });
+    const categoryCache: Record<string, string> = {};
     const data: Array<ProductWithStockInfoType> = [];
     for (const result of results.data) {
+      let cname: string | undefined = result.categoryId
+        ? categoryCache[result.categoryId]
+        : "<none>";
+      if (!cname) {
+        const response = await result.category();
+        if (!!response.data) {
+          cname = response.data.name;
+          categoryCache[result.categoryId!] = cname;
+        } else cname = "<loading-error>";
+      }
       data.push({
         ...result,
         category: {
-          name: "",
+          name: cname,
         },
         stock: [],
       } as ProductWithStockInfoType);
@@ -118,6 +139,30 @@ export default function StockSearchPage() {
     setEntries((p) => [...p, ...data]);
     setCursor(results.nextToken);
     setLoading(false);
+  }
+
+  async function getCategoryOptions(
+    cvalue: string,
+    signal: AbortSignal,
+  ): Promise<Array<[string, string]>> {
+    const promise = client.models.Category.list({
+      filter: {
+        name: {
+          contains: cvalue,
+        },
+      },
+    });
+    const abortPromise = () => {
+      client.cancel(promise, "Aborted!");
+    };
+    signal.addEventListener("abort", abortPromise);
+    const response = await promise;
+    signal.removeEventListener("abort", abortPromise);
+    const results: Array<[string, string]> = [];
+    for (const res of response.data) {
+      results.push([res.id, res.name]);
+    }
+    return results;
   }
 
   return (
@@ -145,11 +190,43 @@ export default function StockSearchPage() {
                   control={form.control}
                   render={({ field, fieldState }) => (
                     <Field className="mb-2">
-                      <FieldLabel htmlFor={field.name}>Product Name</FieldLabel>
-                      <Input
+                      <InputField
                         {...field}
-                        id={field.name}
+                        children="Product Name"
                         aria-invalid={fieldState.invalid}
+                      />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
+                <Controller
+                  name="partNo"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field className="mb-2">
+                      <InputField
+                        {...field}
+                        children="Part #"
+                        aria-invalid={fieldState.invalid}
+                      />
+                      {fieldState.invalid && (
+                        <FieldError errors={[fieldState.error]} />
+                      )}
+                    </Field>
+                  )}
+                />
+                <Controller
+                  name="categoryId"
+                  control={form.control}
+                  render={({ field, fieldState }) => (
+                    <Field className="mb-2">
+                      <SelectField
+                        {...field}
+                        children="Category"
+                        aria-invalid={fieldState.invalid}
+                        options={getCategoryOptions}
                       />
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
@@ -202,14 +279,66 @@ export default function StockSearchPage() {
           </FieldSet>
         </form>
       </section>
-      <section className="container mx-auto px-4 mt-2.5">
+      <section className="relative container mx-auto px-4 mt-2.5 flex flex-row gap-2">
         <InfiniteDataTable
+          className="grow"
           columns={columns}
           data={entries}
           hasMore={!!cursor}
           loadMore={loadMore}
           loading={loading}
+          table={{ enableMultiRowSelection: false, enableRowSelection: true }}
         />
+        <div className="flex flex-col flex-nowrap items-center h-fit sticky top-0">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon-sm"
+              >
+                <HelpCircleIcon />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              Select a row and use the following controls to view, modify and/or
+              delete an entry.
+            </TooltipContent>
+          </Tooltip>
+          <ButtonGroup
+            orientation="vertical"
+            className="my-2"
+          >
+            <Button
+              variant="outline"
+              size="icon-sm"
+              title="View Entry"
+            >
+              <EyeIcon />
+            </Button>
+            <Button
+              variant="outline"
+              size="icon-sm"
+              title="Edit Entry"
+            >
+              <PencilIcon />
+            </Button>
+            <Button
+              variant="outline-destructive"
+              size="icon-sm"
+              title="Delete Entry"
+            >
+              <TrashIcon />
+            </Button>
+          </ButtonGroup>
+          <Button
+            variant="outline"
+            size="icon-sm"
+            title="Scroll to Top"
+            onClick={() => window.scroll}
+          >
+            <ArrowUpIcon />
+          </Button>
+        </div>
       </section>
     </>
   );

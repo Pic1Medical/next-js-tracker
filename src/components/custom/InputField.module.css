@@ -1,0 +1,6 @@
+.container:has(input:not(:placeholder-shown):not([aria-hidden])) > label,
+.container:focus-within > label {
+  top: 0;
+  font-size: x-small;
+  font-weight: bold;
+}

@@ -4,6 +4,7 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
+  TableOptions,
   useReactTable,
 } from "@tanstack/react-table";
 
@@ -18,6 +19,7 @@ import {
 } from "@components/ui/table";
 import { Button } from "../ui/button";
 import { ArrowDownToLineIcon } from "lucide-react";
+import { cn } from "@/src/lib/utils";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -25,6 +27,8 @@ interface DataTableProps<TData, TValue> {
   hasMore: boolean;
   loadMore: () => void;
   loading: boolean;
+  className: string;
+  table?: Omit<TableOptions<TData>, "data" | "columns" | "getCoreRowModel">;
 }
 
 export function InfiniteDataTable<TData, TValue>({
@@ -33,8 +37,11 @@ export function InfiniteDataTable<TData, TValue>({
   hasMore,
   loadMore,
   loading,
+  className,
+  table: tableProps = {},
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
+    ...tableProps,
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
@@ -42,7 +49,7 @@ export function InfiniteDataTable<TData, TValue>({
 
   return (
     <>
-      <div className="overflow-auto rounded-md border">
+      <div className={cn("overflow-auto rounded-md border", className)}>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -54,7 +61,7 @@ export function InfiniteDataTable<TData, TValue>({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext()
+                            header.getContext(),
                           )}
                     </TableHead>
                   );
@@ -73,7 +80,7 @@ export function InfiniteDataTable<TData, TValue>({
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext()
+                        cell.getContext(),
                       )}
                     </TableCell>
                   ))}

@@ -11,6 +11,7 @@ export interface ProductType {
   name: string;
   desc: string;
   partNo: string;
+  selected?: boolean;
 }
 
 export async function getProducts({
@@ -66,6 +67,6 @@ export async function getProductsWithStockInfo({
 > {
   return (await getProducts({ ...opts })) as unknown as [
     Array<ProductWithStockInfoType>,
-    string
+    string,
   ];
 }
