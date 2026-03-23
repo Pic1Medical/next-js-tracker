@@ -3,6 +3,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import styles from "./index.module.css";
 import PasswordState from "./password";
 import { autoSignIn } from "aws-amplify/auth";
+import { handleError } from "../../toaster";
 
 export type States = "password" | "signed-in" | "error" | undefined;
 export interface StateProps {
@@ -25,7 +26,7 @@ export default function StateManager({
         else setState("password");
       })
       .catch((err) => {
-        //console.error(err);
+        handleError(err);
         setState("password");
       });
   }, [setState]);

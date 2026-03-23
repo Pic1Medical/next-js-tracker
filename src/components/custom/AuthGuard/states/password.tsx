@@ -25,6 +25,7 @@ import { signIn } from "aws-amplify/auth";
 import { useRouter } from "next/navigation";
 import { Callout } from "@/src/components/custom/callout";
 import { StateProps } from ".";
+import { handleError } from "../../toaster";
 
 const formSchema = z.object({
   email: z.string(),
@@ -62,6 +63,7 @@ export default function PasswordState({ setState }: Readonly<StateProps>) {
           type: "validate",
           message: (err as Error).message,
         });
+        handleError(err);
       });
   }
 

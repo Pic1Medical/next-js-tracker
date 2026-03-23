@@ -37,6 +37,25 @@ function EditForm({ entry }: Readonly<{ entry: EntryType }>) {
     setBusy(true);
     await (async () => {
       {
+        // 1) Check if one location already exists, if so we stop here.
+        const existing = await client.models.Location.list({
+          filter: { name: { eq: data.name } },
+          limit: 1,
+        });
+        if (!!existing.data.length) {
+          console.log(existing);
+          form.setError(
+            "name",
+            {
+              type: "validate",
+              message: "Location with this name already exists.",
+            },
+            { shouldFocus: true }
+          );
+          return;
+        }
+      }
+      {
         const result = await client.models.Location.update({
           id: entry.id,
           ...data,
