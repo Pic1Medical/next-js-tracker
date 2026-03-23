@@ -7,6 +7,7 @@ Amplify.configure(outputs);
 import "@src/styles/globals.css";
 import { Geist } from "next/font/google";
 import { cn } from "@/src/lib/utils";
+import { Toaster } from "@src/components/ui/sonner";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -24,7 +25,10 @@ export default function RootLayout({
       <head>
         <title>Pic1Medical</title>
       </head>
-      <body className="dark">{children}</body>
+      <body className="dark">
+        {children}
+        <Toaster />
+      </body>
     </html>
   );
 }

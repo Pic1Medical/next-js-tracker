@@ -27,8 +27,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ChevronsUpDownIcon,
   InfoIcon,
-  MapPinIcon,
   SearchIcon,
+  TagIcon,
   TextCursorInputIcon,
 } from "lucide-react";
 import { useState } from "react";
@@ -37,7 +37,7 @@ import z from "zod";
 import { columns } from "./_columndef";
 import { handleError } from "@/src/components/custom/toaster";
 
-export type EntryType = Schema["Location"]["type"];
+export type EntryType = Schema["Category"]["type"];
 
 interface SearchParams {
   loading: boolean;
@@ -74,7 +74,7 @@ function SearchSection({
           disabled={loading}
         >
           <legend className="flex gap-2 items-center bg-sidebar-primary text-sidebar-primary-foreground rounded-lg border border-muted px-2 py-1">
-            Search Location <MapPinIcon size={18} />
+            Search Category <TagIcon size={18} />
           </legend>
           <Collapsible defaultOpen>
             <CollapsibleTrigger asChild>
@@ -189,7 +189,7 @@ export default function () {
         and: filter,
       };
     }
-    const result = await client.models.Location.list({
+    const result = await client.models.Category.list({
       filter,
       limit: Number(limit) ?? 20,
       nextToken: cursor,

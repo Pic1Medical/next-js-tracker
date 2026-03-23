@@ -7,13 +7,13 @@ import { Button } from "@/src/components/ui/button";
 import { Field, FieldError, FieldSet } from "@/src/components/ui/field";
 import { Spinner } from "@/src/components/ui/spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { MapPinIcon } from "lucide-react";
+import { MapPinIcon, TagIcon } from "lucide-react";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 
-export type EntryType = Schema["Location"]["type"];
+export type EntryType = Schema["Category"]["type"];
 
 const editFormSchema = z.object({
   name: z.string().min(1, "Name field may not be left empty!"),
@@ -37,14 +37,34 @@ function EditForm({ entry }: Readonly<{ entry: EntryType }>) {
     setBusy(true);
     await (async () => {
       {
-        const result = await client.models.Location.update({
+        // 1) Check if one location already exists, if so we stop here.
+        const existing = await client.models.Location.list({
+          filter: { name: { eq: data.name } },
+          limit: 1,
+        });
+        if (!!existing.data.length) {
+          console.log(existing);
+          form.setError(
+            "name",
+            {
+              type: "validate",
+              message: "Location with this name already exists.",
+            },
+            { shouldFocus: true }
+          );
+          return;
+        }
+      }
+      {
+        // 2) Update the existing category with the new data
+        const result = await client.models.Category.update({
           id: entry.id,
           ...data,
         });
         if (!!result.data) {
-          toast.success("Location updated successfully!");
+          toast.success("Category updated successfully!");
         } else {
-          const message = "Failed to update Location, try again...";
+          const message = "Failed to update Category, try again...";
           form.setError("root", { message }, { shouldFocus: true });
           throw message;
         }
@@ -65,7 +85,7 @@ function EditForm({ entry }: Readonly<{ entry: EntryType }>) {
             disabled={busy}
           >
             <legend className="flex gap-2 items-center bg-sidebar-primary text-sidebar-primary-foreground rounded-lg border border-muted px-2 py-1">
-              Location <MapPinIcon size={18} />
+              Category <TagIcon size={18} />
             </legend>
             <div className="px-4 py-2 border rounded-md grid grid-cols-1 gap-4 pt-3">
               <Controller
@@ -77,7 +97,6 @@ function EditForm({ entry }: Readonly<{ entry: EntryType }>) {
                       {...field}
                       children="Name"
                       aria-invalid={fieldState.invalid}
-                      readOnly
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -126,19 +145,19 @@ function EditForm({ entry }: Readonly<{ entry: EntryType }>) {
 export default function () {
   const router = useRouter();
   const params = useSearchParams();
-  if (!params.has("id")) return redirect("/client/tracker/location");
+  if (!params.has("id")) return redirect("/client/tracker/category");
   const id = params.get("id")!;
   const [entry, setEntry] = useState<EntryType | undefined>();
 
   useEffect(() => {
     (async () => {
-      const result = await client.models.Location.get({ id });
+      const result = await client.models.Category.get({ id });
       if (!!result.data) {
         setEntry(result.data);
-      } else throw "No Location with specified ID found, redirecting...";
+      } else throw "No Category with specified ID found, redirecting...";
     })().catch((err) => {
       handleError(err);
-      router.replace("/client/tracker/location");
+      router.replace("/client/tracker/category");
     });
   }, []);
 
