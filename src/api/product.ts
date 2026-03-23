@@ -6,12 +6,12 @@ export interface GetProductsOptions {
 }
 
 export interface ProductType {
+  _id: string;
   categoryId: string;
   category: { name: string };
   name: string;
   desc: string;
   partNo: string;
-  selected?: boolean;
 }
 
 export async function getProducts({
@@ -43,6 +43,7 @@ export async function getProducts({
       }
       results.push({
         ...res,
+        _id: res.id,
         category: {
           name: category.name ?? "",
         },
@@ -67,6 +68,6 @@ export async function getProductsWithStockInfo({
 > {
   return (await getProducts({ ...opts })) as unknown as [
     Array<ProductWithStockInfoType>,
-    string,
+    string
   ];
 }

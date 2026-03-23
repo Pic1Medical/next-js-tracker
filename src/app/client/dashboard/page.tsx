@@ -1,3 +1,6 @@
+"use client";
+import { redirect } from "next/navigation";
+
 export default function DashboardPage() {
-  return <p>Dashboard</p>;
+  return redirect("/client/tracker");
 }

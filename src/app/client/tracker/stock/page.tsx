@@ -22,16 +22,10 @@ import {
 } from "@/src/components/ui/tooltip";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
-  ArrowUpCircleIcon,
-  ArrowUpIcon,
   ChevronsUpDownIcon,
-  EyeIcon,
-  HelpCircleIcon,
   InfoIcon,
-  PencilIcon,
   SearchIcon,
   TextCursorInputIcon,
-  TrashIcon,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -41,7 +35,7 @@ import { ProductWithStockInfoType } from "@/src/api/product";
 import { client } from "@/src/api/client";
 import InputField from "@/src/components/custom/InputField";
 import SelectField from "@/src/components/custom/SelectField";
-import { ButtonGroup } from "@/src/components/ui/button-group";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().optional(),
@@ -52,6 +46,7 @@ const formSchema = z.object({
 type FormSchema = z.infer<typeof formSchema>;
 
 export default function StockSearchPage() {
+  const router = useRouter();
   const [filters, setFilters] = useState<Record<string, string | undefined>>({
     name: "",
     partNo: "",
@@ -130,6 +125,7 @@ export default function StockSearchPage() {
       }
       data.push({
         ...result,
+        _id: result.id,
         category: {
           name: cname,
         },
@@ -143,7 +139,7 @@ export default function StockSearchPage() {
 
   async function getCategoryOptions(
     cvalue: string,
-    signal: AbortSignal,
+    signal: AbortSignal
   ): Promise<Array<[string, string]>> {
     const promise = client.models.Category.list({
       filter: {
@@ -164,6 +160,13 @@ export default function StockSearchPage() {
     }
     return results;
   }
+
+  const actions = {
+    view: (row: ProductWithStockInfoType) => {
+      router.push("/client/tracker/stock/details?id=" + row._id);
+    },
+    remove: (row: ProductWithStockInfoType) => {},
+  };
 
   return (
     <>
@@ -289,56 +292,6 @@ export default function StockSearchPage() {
           loading={loading}
           table={{ enableMultiRowSelection: false, enableRowSelection: true }}
         />
-        <div className="flex flex-col flex-nowrap items-center h-fit sticky top-0">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="outline"
-                size="icon-sm"
-              >
-                <HelpCircleIcon />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              Select a row and use the following controls to view, modify and/or
-              delete an entry.
-            </TooltipContent>
-          </Tooltip>
-          <ButtonGroup
-            orientation="vertical"
-            className="my-2"
-          >
-            <Button
-              variant="outline"
-              size="icon-sm"
-              title="View Entry"
-            >
-              <EyeIcon />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon-sm"
-              title="Edit Entry"
-            >
-              <PencilIcon />
-            </Button>
-            <Button
-              variant="outline-destructive"
-              size="icon-sm"
-              title="Delete Entry"
-            >
-              <TrashIcon />
-            </Button>
-          </ButtonGroup>
-          <Button
-            variant="outline"
-            size="icon-sm"
-            title="Scroll to Top"
-            onClick={() => window.scroll}
-          >
-            <ArrowUpIcon />
-          </Button>
-        </div>
       </section>
     </>
   );

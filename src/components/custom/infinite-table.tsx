@@ -27,7 +27,7 @@ interface DataTableProps<TData, TValue> {
   hasMore: boolean;
   loadMore: () => void;
   loading: boolean;
-  className: string;
+  className?: string;
   table?: Omit<TableOptions<TData>, "data" | "columns" | "getCoreRowModel">;
 }
 
@@ -61,7 +61,7 @@ export function InfiniteDataTable<TData, TValue>({
                         ? null
                         : flexRender(
                             header.column.columnDef.header,
-                            header.getContext(),
+                            header.getContext()
                           )}
                     </TableHead>
                   );
@@ -80,7 +80,7 @@ export function InfiniteDataTable<TData, TValue>({
                     <TableCell key={cell.id}>
                       {flexRender(
                         cell.column.columnDef.cell,
-                        cell.getContext(),
+                        cell.getContext()
                       )}
                     </TableCell>
                   ))}

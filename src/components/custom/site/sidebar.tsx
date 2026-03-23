@@ -100,14 +100,14 @@ export default function SiteSidebar() {
           <CollapsibleContent>
             <SidebarGroupContent>
               <SidebarMenuSub>
-                <SidebarMenuSubItem>
+                {/* <SidebarMenuSubItem>
                   <SidebarMenuSubButton asChild>
                     <Link href="/client/dashboard">
                       <LayoutDashboardIcon />
                       <span>Dashboard</span>
                     </Link>
                   </SidebarMenuSubButton>
-                </SidebarMenuSubItem>
+                </SidebarMenuSubItem> */}
                 <SidebarMenuSubItem>
                   <SidebarMenuSubButton asChild>
                     <Link href="/client/tracker">

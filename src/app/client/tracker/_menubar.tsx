@@ -96,7 +96,7 @@ export default function TrackerMenubar() {
               </MenubarSub>
               <MenubarSub>
                 <MenubarSubTrigger>
-                  <BoxIcon
+                  <TagsIcon
                     size="15"
                     className="mr-1"
                   />
@@ -106,7 +106,7 @@ export default function TrackerMenubar() {
                   <MenubarGroup>
                     <MenubarItem asChild>
                       <Link href="/client/tracker/category">
-                        <TagsIcon />
+                        <SearchIcon />
                         <span>Search Category</span>
                       </Link>
                     </MenubarItem>
