@@ -13,7 +13,8 @@ import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
 import StockSearch from "../../stock/search";
-import CreateStock from "../../stock/create.tsx";
+import CreateStock from "../../stock/create";
+import { useTrackerContext } from "../../_context";
 
 export type EntryType = Schema["Product"]["type"];
 
@@ -26,6 +27,24 @@ const editFormSchema = z.object({
 type EditFormSchema = z.infer<typeof editFormSchema>;
 
 function EditForm({ entry }: Readonly<{ entry: EntryType }>) {
+  const router = useRouter();
+  const tracker = useTrackerContext();
+  useEffect(()=>{
+    return tracker?.register(()=>{
+      const confirm = window.confirm("Are you sure you wish to delete this Product item?");
+      if(!confirm) return;
+      client.models.Product.delete({ id: entry.id })
+        .then((result) => {
+          if (!result.data) throw "Failed to delete Product item, try again...";
+          else {
+            toast.success("Successfully deleted Product item.");
+            router.back();
+          }
+        })
+      .catch(handleError);
+    });
+  }, []);
+
   const [busy, setBusy] = useState(false);
   const form = useForm<EditFormSchema>({
     resolver: zodResolver(editFormSchema),

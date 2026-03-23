@@ -11,6 +11,10 @@ import { BoxesIcon, PlusSquareIcon } from "lucide-react";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
+import { useState } from "react";
+import { client } from "@src/api/client";
+import { handleError } from "@/src/components/custom/toaster";
+import { useRouter } from "next/navigation";
 
 const createFormSchema = z.object({
   location: z.string().min(1, "Location is required"),
@@ -24,22 +28,36 @@ export default function CreateStock({
 }: Readonly<{
   productId: string;
 }>) {
+  const router = useRouter();
   const [busy, setBusy] = useState(false);
   const form = useForm<CreateFormSchema>({
     resolver: zodResolver(createFormSchema),
-    mode: "onTouch",
+    mode: "onTouched",
     defaultValues: {
       location: "",
-      qty: "1",
+      qty: 1,
     }
   });
 
   async function onSubmit(fields: CreateFormSchema) {
     setBusy(true);
     await (async()=>{
-      const result = await client.models.Stock.create({
-
+      const location = await client.models.Location.list({
+        filter: {
+          name: { eq: fields.location }
+        }
       });
+      console.log(location);
+      if(location.data.length != 1)
+        throw "Could not find specified location to place stock in...";
+      const result = await client.models.Stock.create({
+        locationId: location.data[0].id,
+        productId,
+        qty: fields.qty
+      });
+      if(!result.data)
+        throw "Could not create new Product Stock, try again...";
+      router.push("/client/tracker/stock/details?id="+result.data.id);
     })().catch(handleError).finally(()=>{
       setBusy(false);
     })

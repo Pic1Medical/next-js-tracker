@@ -56,16 +56,16 @@ export default function () {
       }
       {
         // 2) If we don't have an existing category, add one.
-        const result = await client.models.Category.create({
+        const result = await client.models.Product.create({
           ...data,
         });
         if (!!result.data) {
           router.replace(
-            "/client/tracker/category/details?id=" + result.data.id
+            "/client/tracker/product/details?id=" + result.data.id
           );
           return;
         } else {
-          const message = "Failed to create new Category, try again...";
+          const message = "Failed to create new Product, try again...";
           form.setError("root", { message }, { shouldFocus: true });
           throw message;
         }

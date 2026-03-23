@@ -25,8 +25,11 @@ import {
   WarehouseIcon,
 } from "lucide-react";
 import Link from "next/link";
+import { useTrackerContext } from "./_context";
 
 export default function TrackerMenubar() {
+  const tracker = useTrackerContext();
+
   return (
     <ClientPortal selector="#header-portal">
       <h1 className="font-bold mr-2 flex items-center gap-1 pointer-none select-none">
@@ -122,7 +125,8 @@ export default function TrackerMenubar() {
               <MenubarSeparator />
               <MenubarItem
                 variant="destructive"
-                disabled
+                disabled={!tracker.canDestroy}
+                onClick={tracker.destroy}
               >
                 <EraserIcon />
                 <span>Delete Current</span>

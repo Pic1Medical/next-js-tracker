@@ -12,6 +12,7 @@ import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
+import { useTrackerContext } from "../../_context";
 
 export type EntryType = Schema["Location"]["type"];
 
@@ -23,6 +24,24 @@ const editFormSchema = z.object({
 type EditFormSchema = z.infer<typeof editFormSchema>;
 
 function EditForm({ entry }: Readonly<{ entry: EntryType }>) {
+  const router = useRouter();
+  const tracker = useTrackerContext();
+  useEffect(()=>{
+    return tracker?.register(()=>{
+      const confirm = window.confirm("Are you sure you wish to delete this Location item?");
+      if(!confirm) return;
+      client.models.Location.delete({ id: entry.id })
+        .then((result) => {
+          if (!result.data) throw "Failed to delete Location item, try again...";
+          else {
+            toast.success("Successfully deleted Location item.");
+            router.back();
+          }
+        })
+      .catch(handleError);
+    });
+  }, []);
+
   const [busy, setBusy] = useState(false);
   const form = useForm<EditFormSchema>({
     resolver: zodResolver(editFormSchema),
