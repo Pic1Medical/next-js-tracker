@@ -31,7 +31,7 @@ export const columns: Array<ColumnDef<EntryType>> = [
   },
   {
     accessorKey: "name",
-    header: "Location Name",
+    header: "Category Name",
   },
   {
     accessorKey: "desc",

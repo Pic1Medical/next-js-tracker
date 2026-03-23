@@ -7,23 +7,20 @@ import { Button } from "@/src/components/ui/button";
 import { Field, FieldError, FieldSet } from "@/src/components/ui/field";
 import { Spinner } from "@/src/components/ui/spinner";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { BoxesIcon } from "lucide-react";
+import { BoxIcon } from "lucide-react";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { z } from "zod";
+import StockSearch from "../../stock/search";
+import CreateStock from "../../stock/create.tsx";
 
-export type EntryType = Omit<
-  Schema["Stock"]["type"],
-  "product" | "location"
-> & {
-  product?: Schema["Product"]["type"];
-  location?: Schema["Location"]["type"];
-};
+export type EntryType = Schema["Product"]["type"];
 
 const editFormSchema = z.object({
-  location: z.string().optional(),
-  qty: z.coerce.number().min(1, "Can't have less than 1 stock item."),
+  name: z.string().min(1, "Name field may not be left empty!"),
+  desc: z.string().optional(),
+  partNo: z.string().optional(),
 });
 
 type EditFormSchema = z.infer<typeof editFormSchema>;
@@ -34,34 +31,48 @@ function EditForm({ entry }: Readonly<{ entry: EntryType }>) {
     resolver: zodResolver(editFormSchema),
     mode: "onTouched",
     defaultValues: {
-      location: entry.location?.name || "",
-      qty: entry.qty,
+      name: entry.name,
+      desc: entry.desc ?? "",
+      partNo: entry.partNo ?? "",
     },
   });
 
   async function onSubmit(data: EditFormSchema) {
     setBusy(true);
     await (async () => {
-      let locationId = entry.locationId;
-      if (data.location && data.location !== entry.location?.name) {
-        const result = await client.models.Location.list({
-          filter: { name: { eq: data.location } },
+      {
+        // 1) Check if one location already exists, if so we stop here.
+        const existing = await client.models.Location.list({
+          filter: { name: { eq: data.name } },
           limit: 1,
         });
-        if (!!result.data.length) {
-          locationId = result.data[0].id;
-        } else {
-          throw "Could not find a matching location with that name...";
+        if (!!existing.data.length) {
+          console.log(existing);
+          form.setError(
+            "name",
+            {
+              type: "validate",
+              message: "Location with this name already exists.",
+            },
+            { shouldFocus: true }
+          );
+          return;
         }
       }
-      const result = await client.models.Stock.update({
-        id: entry.id,
-        locationId,
-        qty: data.qty,
-      });
-      if (!result.data)
-        throw "Could not update Stock information, try again...";
-      else toast.success("Successfully updated Stock information.");
+      {
+        // 2) Update the existing category with the new data
+        const result = await client.models.Category.update({
+          id: entry.id,
+          ...data,
+        });
+        if (!!result.data) {
+          toast.success("Category updated successfully!");
+        } else {
+          const message = "Failed to update Category, try again...";
+          form.setError("root", { message }, { shouldFocus: true });
+          throw message;
+        }
+      }
     })()
       .catch(handleError)
       .finally(() => {
@@ -78,24 +89,17 @@ function EditForm({ entry }: Readonly<{ entry: EntryType }>) {
             disabled={busy}
           >
             <legend className="flex gap-2 items-center bg-sidebar-primary text-sidebar-primary-foreground rounded-lg border border-muted px-2 py-1">
-              Stock <BoxesIcon size={18} />
+              Product <BoxIcon size={18} />
             </legend>
             <div className="px-4 py-2 border rounded-md grid grid-cols-1 gap-4 pt-3">
-              <Field className="mb-2">
-                <InputField
-                  children="Product Name"
-                  value={entry.product?.name || "Unknown Product"}
-                  readOnly
-                />
-              </Field>
               <Controller
-                name="location"
+                name="name"
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field className="mb-2">
                     <InputField
                       {...field}
-                      children="Location"
+                      children="Name"
                       aria-invalid={fieldState.invalid}
                     />
                     {fieldState.invalid && (
@@ -105,14 +109,29 @@ function EditForm({ entry }: Readonly<{ entry: EntryType }>) {
                 )}
               />
               <Controller
-                name="qty"
+                name="partNo"
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field className="mb-2">
                     <InputField
                       {...field}
-                      children="Quantity"
-                      type="number"
+                      children="Part #"
+                      aria-invalid={fieldState.invalid}
+                    />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+              <Controller
+                name="desc"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field className="mb-2">
+                    <InputField
+                      {...field}
+                      children="Description"
                       aria-invalid={fieldState.invalid}
                     />
                     {fieldState.invalid && (
@@ -139,6 +158,8 @@ function EditForm({ entry }: Readonly<{ entry: EntryType }>) {
           </FieldSet>
         </form>
       </section>
+      <CreateStock productId={entry.id} />
+      <StockSearch productId={entry.id} />
     </>
   );
 }
@@ -152,19 +173,13 @@ export default function () {
 
   useEffect(() => {
     (async () => {
-      const result = await client.models.Stock.get({ id });
+      const result = await client.models.Product.get({ id });
       if (!!result.data) {
-        const entry = {
-          ...result.data,
-          product: (await result.data.product()).data,
-          location: (await result.data.location()).data,
-        } as EntryType;
-        console.log(entry);
-        setEntry(entry);
-      } else throw "No Product Stock with specified ID found, redirecting...";
+        setEntry(result.data);
+      } else throw "No Category with specified ID found, redirecting...";
     })().catch((err) => {
       handleError(err);
-      router.replace("/client/tracker/product");
+      router.replace("/client/tracker/category");
     });
   }, []);
 

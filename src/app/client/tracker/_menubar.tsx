@@ -46,31 +46,6 @@ export default function TrackerMenubar() {
             <MenubarGroup>
               <MenubarSub>
                 <MenubarSubTrigger>
-                  <WarehouseIcon
-                    size="15"
-                    className="mr-1"
-                  />
-                  <span>Stock</span>
-                </MenubarSubTrigger>
-                <MenubarSubContent>
-                  <MenubarGroup>
-                    <MenubarItem asChild>
-                      <Link href="/client/tracker/stock">
-                        <SearchIcon />
-                        <span>Search Entries</span>
-                      </Link>
-                    </MenubarItem>
-                    <MenubarItem asChild>
-                      <Link href="/client/tracker/stock/create">
-                        <PlusIcon />
-                        <span>Create Entry</span>
-                      </Link>
-                    </MenubarItem>
-                  </MenubarGroup>
-                </MenubarSubContent>
-              </MenubarSub>
-              <MenubarSub>
-                <MenubarSubTrigger>
                   <BoxIcon
                     size="15"
                     className="mr-1"

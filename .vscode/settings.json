@@ -10,6 +10,6 @@
     "next.config.*": "next-env.d.ts, tsconfig.json",
     "README.md": "*.md, LICENSE"
   },
-  "editor.formatOnSave": true,
+  "editor.formatOnSave": false,
   "editor.defaultFormatter": "esbenp.prettier-vscode"
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { EntryType } from "./search";
+import { EntryType } from "./page";
 import { ButtonGroup } from "@/src/components/ui/button-group";
 import { Button } from "@/src/components/ui/button";
 import { EyeIcon } from "lucide-react";
@@ -19,7 +19,9 @@ export const columns: Array<ColumnDef<EntryType>> = [
             title="View Entry"
             asChild
           >
-            <Link href={`/client/tracker/stock/details?id=${props.getValue()}`}>
+            <Link
+              href={`/client/tracker/product/details?id=${props.getValue()}`}
+            >
               <EyeIcon aria-label="View Entry" />
             </Link>
           </Button>
@@ -28,11 +30,25 @@ export const columns: Array<ColumnDef<EntryType>> = [
     },
   },
   {
-    accessorKey: "location.name",
-    header: "Location",
+    accessorKey: "name",
+    header: "Product Name",
   },
   {
-    accessorKey: "qty",
-    header: "Quantity",
+    accessorKey: "category.name",
+    header: "Category",
+    cell(props) {
+      const value = props.getValue() as string | undefined;
+      if (!value)
+        return <span className="text-muted-foreground">No Category</span>;
+      return <span className="capitalize">{value}</span>;
+    },
+  },
+  {
+    accessorKey: "partNo",
+    header: "Part Number",
+  },
+  {
+    accessorKey: "desc",
+    header: "Description",
   },
 ];
