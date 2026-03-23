@@ -125,8 +125,8 @@ export default function TrackerMenubar() {
               <MenubarSeparator />
               <MenubarItem
                 variant="destructive"
-                disabled={!tracker.canDestroy}
-                onClick={tracker.destroy}
+                disabled={!tracker?.canDestroy}
+                onClick={tracker?.destroy}
               >
                 <EraserIcon />
                 <span>Delete Current</span>
