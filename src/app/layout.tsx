@@ -5,6 +5,7 @@ import outputs from "@/amplify_outputs.json";
 Amplify.configure(outputs);
 
 import "@src/styles/globals.css";
+import "@aws-amplify/ui-react/styles.css";
 import { Geist } from "next/font/google";
 import { cn } from "@/src/lib/utils";
 import { Toaster } from "@src/components/ui/sonner";

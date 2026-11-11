@@ -1,3 +1,4 @@
+"use client";
 import { AuthGuard } from "@/src/components/custom/AuthGuard";
 import {
   SiteFooter,
